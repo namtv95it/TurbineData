@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RequestNewLibDAO">
+
+    <select id="getRequest" parameterType="map" resultType="map">
+        SELECT
+            AP.ID as postId,
+            AP.CREATED_BY as createdBy,
+            AP.CREATED_DATE as createdDate,
+            AP.TITLE as title,
+            TS.COMM_NM as statusNm,
+            TS.COMM_NM_EN as statusNmEn,
+            APRS.STATUS as status
+        FROM AFP_POST AP
+        LEFT JOIN AFP_POST_REQUEST_STATUS APRS ON AP.ID = APRS.REQUEST_ID
+        INNER JOIN TCCO_STD TS ON TS.COMM_CD = APRS.STATUS
+        WHERE AP.TITLE LIKE CONCAT("%", #{keySearch}, "%")
+        AND AP.IS_DELETED = #{isDeleted}
+        AND AP.COMM_CD_POST_TYPE_ID = #{postTypeRequest}
+    </select>
+
+    <select id="getRequestById" parameterType="map" resultMap="requestMap">
+        SELECT
+            AP.ID as requestId,
+            AP.TITLE as title,
+            AP.DESCRIPTION as description,
+            AP.CREATED_BY as createdBy,
+            AP.CREATED_DATE as createdDate,
+            AP.UPDATED_DATE as updatedDate,
+            COUNT(DISTINCT AC.ID) AS commentNumber,
+            AP.VIEW_NUMBER AS viewNumber
+        FROM AFP_POST AP
+        LEFT JOIN AFP_COMMENT AC ON AP.ID = AC.POST_ID AND AC.IS_DELETED = #{isDeleted}
+        WHERE AP.ID = #{requestId}
+    </select>
+
+    <insert id="insertRequest" parameterType="map" useGeneratedKeys="true" keyColumn="ID" keyProperty="requestId">
+        INSERT INTO AFP_POST
+            (TITLE, DESCRIPTION, CREATED_BY, CREATED_DATE, VIEW_NUMBER, COMM_CD_POST_TYPE_ID, IS_DELETED)
+        VALUES
+            (#{title}, #{description}, #{createdBy}, NOW(), #{defaultViewNumber}, #{postTypeRequest}, #{isDeleted} );
+    </insert>
+
+    <insert id="insertRequestStatus" parameterType="map">
+        INSERT INTO AFP_POST_REQUEST_STATUS
+        (REQUEST_ID, STATUS)
+        VALUES
+            (#{requestId}, #{status} );
+    </insert>
+
+    <resultMap id="requestMap" type="map">
+        <result property="requestId" column="requestId"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="viewNumber" column="viewNumber"/>
+        <result property="commentNumber" column="commentNumber"/>
+        <result property="createdBy" column="createdBy"/>
+        <result property="createdDate" column="createdDate"/>
+        <result property="updatedDate" column="updatedDate"/>
+<!--        <collection property="lstComment" ofType="map" javaType="ArrayList">-->
+<!--            <result property="commentId" column="commentId"/>-->
+<!--            <result property="content" column="content"/>-->
+<!--            <result property="createdBy" column="createdBy"/>-->
+<!--            <result property="createdDate" column="createdDate"/>-->
+<!--            <result property="updatedDate" column="updatedDate"/>-->
+<!--        </collection>-->
+    </resultMap>
+
+    <update id="updateRequest" parameterType="map">
+        UPDATE AFP_POST
+        SET
+            DESCRIPTION= #{description},
+            TITLE = #{title},
+            UPDATED_DATE = NOW(),
+            UPDATED_BY = #{updatedBy}
+        WHERE  `ID`=#{requestId};
+    </update>
+    
+    <delete id="deletePost" parameterType="map">
+        UPDATE AFP_POST SET IS_DELETED = #{isDeleted} WHERE AFP_POST.ID = #{requestId}
+    </delete>
+
+    <delete id="deletePostRequestStatus" parameterType="string">
+        DELETE FROM AFP_POST_REQUEST_STATUS WHERE REQUEST_ID = #{requestId}
+    </delete>
+
+    <update id="updateRequestStatus" parameterType="map">
+        UPDATE AFP_POST_REQUEST_STATUS SET STATUS = #{status} WHERE REQUEST_ID = #{requestId}
+    </update>
+</mapper>

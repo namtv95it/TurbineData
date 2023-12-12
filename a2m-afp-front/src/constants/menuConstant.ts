@@ -1,0 +1,12 @@
+export class MenuConstant {
+    public static readonly MENU = [
+        { "menuId": "MNU_10", "lev": 1, "menuNm": "Project", "menuNmEn": "Project", "menuNmVi": "Project", "ordNo": 1, "tsstMenu": null, "tsstMenuDtos": [], "url": "/project", "useYn": "Y" },
+        { "menuId": "MNU_11", "lev": 1, "menuNm": "Document", "menuNmEn": "Document", "menuNmVi": "Document", "ordNo": 2, "tsstMenu": null, "tsstMenuDtos": [], "url": "/document", "useYn": "Y" },
+        { "menuId": "MNU_11_01", "lev": 2, "menuNm": "Guide", "menuNmEn": "Guide", "menuNmVi": "Guide", "ordNo": 5, "tsstMenu": { "menuId": "MNU_11", "lev": 1, "menuNm": "Document", "menuNmEn": "Document", "menuNmVi": "Document", "ordNo": 2, "tsstMenu": null, "tsstMenuDtos": [], "url": "/document", "useYn": "Y" }, "tsstMenuDtos": [], "url": "/document/guide", "useYn": "Y" },
+        { "menuId": "MNU_11_02", "lev": 2, "menuNm": "Coding conventions", "menuNmEn": "Coding conventions", "menuNmVi": "Coding conventions", "ordNo": 6, "tsstMenu": { "menuId": "MNU_11", "lev": 1, "menuNm": "Document", "menuNmEn": "Document", "menuNmVi": "Document", "ordNo": 2, "tsstMenu": null, "tsstMenuDtos": [], "url": "/document", "useYn": "Y" }, "tsstMenuDtos": [], "url": "/document/coding-conventions", "useYn": "Y" },
+        { "menuId": "MNU_11_03", "lev": 2, "menuNm": "Common library", "menuNmEn": "Common library", "menuNmVi": "Common library", "ordNo": 7, "tsstMenu": { "menuId": "MNU_11", "lev": 1, "menuNm": "Document", "menuNmEn": "Document", "menuNmVi": "Document", "ordNo": 2, "tsstMenu": null, "tsstMenuDtos": [], "url": "/document", "useYn": "Y" }, "tsstMenuDtos": [], "url": "/document/common-library", "useYn": "Y" },
+        { "menuId": "MNU_11_04", "lev": 2, "menuNm": "Component templates", "menuNmEn": "Component templates", "menuNmVi": "Component templates", "ordNo": 8, "tsstMenu": { "menuId": "MNU_11", "lev": 1, "menuNm": "Document", "menuNmEn": "Document", "menuNmVi": "Document", "ordNo": 2, "tsstMenu": null, "tsstMenuDtos": [], "url": "/document", "useYn": "Y" }, "tsstMenuDtos": [], "url": "/document/component-templates", "useYn": "Y" },
+        { "menuId": "MNU_12", "lev": 1, "menuNm": "Download", "menuNmEn": "Download", "menuNmVi": "Download", "ordNo": 3, "tsstMenu": null, "tsstMenuDtos": [], "url": "/download", "useYn": "Y" },
+        { "menuId": "MNU_13", "lev": 1, "menuNm": "Threads", "menuNmEn": "Threads", "menuNmVi": "Threads", "ordNo": 4, "tsstMenu": null, "tsstMenuDtos": [], "url": "/threads", "useYn": "Y" }
+    ]
+}

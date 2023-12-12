@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sys0101DAO">
+
+	<select id="getLstMenu"
+		resultType="egovframework.com.a2m.egov.model.TsstMenu"
+		parameterType="map">
+		SELECT * FROM TSST_MENU WHERE
+		(
+		MENU_NM LIKE CONCAT('%',
+		#{menuName}, '%')
+		OR
+		MENU_NM_EN LIKE CONCAT('%', #{menuName}, '%')
+		OR
+		MENU_NM_VI LIKE CONCAT('%', #{menuName}, '%')
+		)
+		<if test="status != 'null'">
+			AND USE_YN = #{status}
+		</if>
+	</select>
+
+	<insert id="insertMenu"
+		parameterType="egovframework.com.a2m.egov.model.TsstMenu">
+		INSERT INTO TSST_MENU
+		(
+		MENU_ID,
+		CREATED_BY,
+		CREATED_DATE,
+		DESCRIPTION,
+		LEV,
+		MENU_NM,
+		MENU_NM_EN,
+		MENU_NM_VI,
+		MENU_TYPE,
+		ORD_NO,
+		UP_MENU_ID,
+		UPDATED_DATE,
+		URL,
+		USE_YN
+		)
+		VALUES
+		(
+		#{menuId},
+		#{createdBy},
+		NOW(),
+		#{description},
+		#{lev},
+		#{menuNm},
+		#{menuNmEn},
+		#{menuNmVi},
+		#{menuType},
+		#{ordNo},
+		#{upMenuId},
+		#{updatedDate},
+		#{url},
+		#{useYn});
+	</insert>
+
+	<update id="updateMenu"
+		parameterType="egovframework.com.a2m.egov.model.TsstMenu">
+		UPDATE TSST_MENU
+		SET
+		DESCRIPTION = #{description},
+		MENU_NM
+		= #{menuNm},
+		MENU_NM_EN = #{menuNmEn},
+		MENU_NM_VI = #{menuNmVi},
+		ORD_NO =
+		#{ordNo},
+		UPDATED_DATE = NOW(),
+		URL = #{url},
+		UPDATED_BY = #{updatedBy},
+		USE_YN = #{useYn}
+		WHERE
+		MENU_ID = #{menuId};
+	</update>
+
+	<delete id="deleteMenu" parameterType="String">
+		DELETE FROM TSST_MENU
+		WHERE MENU_ID LIKE CONCAT(#{menuId},'%')
+	</delete>
+
+	<select id="getMaxMenuId" parameterType="String"
+		resultType="String">
+		SELECT MAX(tm.MENU_ID) FROM TSST_MENU tm
+		<if test="menuId != null and menuId != ''">
+			WHERE tm.UP_MENU_ID = #{menuId}
+		</if>
+	</select>
+	<select id="getMaxOrdNo" resultType="Integer">
+		SELECT MAX(tm.ORD_NO) FROM
+		TSST_MENU tm
+	</select>
+
+	<select id="getNumChildrenOfMenu" parameterType="String"
+		resultType="Integer">
+		SELECT COUNT(*) FROM TSST_MENU WHERE UP_MENU_ID =
+		#{upMenuId}
+	</select>
+
+	<select id="getMenuByID" parameterType="String"
+		resultType="egovframework.com.a2m.egov.model.TsstMenu">
+		SELECT * FROM TSST_MENU WHERE MENU_ID = #{menuId}
+	</select>
+
+	<select id="getMenuByUser" parameterType="map"
+		resultMap="menuRm">
+		<!-- select T3.* from TSST_USER_ROLE T1 -->
+		<!-- join TSST_ROLE_MENU T2 on -->
+		<!-- T1.ROLE_ID = T2.ROLE_ID -->
+		<!-- join TSST_MENU T3 on T2.MENU_ID = T3.MENU_ID -->
+		<!-- join TSST_USER T4 on T1.USER_UID = T4.USER_UID -->
+		<!-- where T4.USER_ID = -->
+		<!-- #{userId} and T3.UP_MENU_ID is null and T3.USE_YN = -->
+		<!-- #{useYn} -->
+		<!-- order by -->
+		<!-- T3.ORD_NO asc, T3.LEV asc -->
+		select distinct T3.* from TSST_USER_ROLE T1
+		join TSST_ROLE_MENU T2 on
+		T1.ROLE_ID = T2.ROLE_ID and (
+		T2.DEL_YN = 'Y' OR T2.EXC_DN_YN = 'Y' OR
+		T2.MNG_YN = 'Y' OR
+		T2.MOD_YN = 'Y' OR T2.PNT_YN = 'Y' OR T2.READ_YN =
+		'Y' OR
+		T2.WRT_YN = 'Y' )
+		join TSST_MENU T3 on T2.MENU_ID = T3.MENU_ID
+		where T1.USER_UID =
+		#{userUid} and T3.USE_YN =
+		#{useYn}
+		order by T3.MENU_ID asc, T3.UP_MENU_ID asc, T3.ORD_NO asc
+	</select>
+
+	<select id="selectParentMenu" resultType="egovframework.com.a2m.egov.model.TsstMenuMap">
+		SELECT * FROM TSST_MENU WHERE MENU_ID = #{UP_MENU_ID}
+	</select>
+	
+	<select id="selectParent" resultType="egovframework.com.a2m.egov.model.TsstMenuMap">
+		select T2.* from TSST_MENU T1 join
+		TSST_MENU T2 on T1.UP_MENU_ID = T2.MENU_ID
+		where T1.MENU_ID = #{menuId}
+	</select>
+
+
+	<resultMap
+		type="egovframework.com.a2m.egov.model.TsstMenuMap" id="menuRm">
+		<id property="menuId" column="MENU_ID" />
+		<result property="menuNm" column="MENU_NM" />
+		<result property="menuNmEn" column="MENU_NM_EN" />
+		<result property="menuNmVi" column="MENU_NM_VI" />
+		<result property="menuType" column="MENU_TYPE" />
+		<result property="tsstParrentMenuId" column="UP_MENU_ID" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="lev" column="LEV" />
+		<result property="url" column="URL" />
+		<result property="useYn" column="USE_YN" />
+		<result property="ordNo" column="ORD_NO" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="updatedBy" column="UPDATED_BY" />
+<!-- 		<association property="tsstMenu" javaType="egovframework.com.a2m.egov.model.TsstMenuMap" column="UP_MENU_ID" select="selectParentMenu" /> -->
+	</resultMap>
+</mapper>

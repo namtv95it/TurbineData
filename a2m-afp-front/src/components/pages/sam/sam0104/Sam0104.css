@@ -1,0 +1,184 @@
+.p-accordion-header.delete a,
+.accordion-content-delete .p-accordion-content {
+  background-color: #faecec !important;
+}
+
+.p-accordion-header.get a,
+.accordion-content-get .p-accordion-content {
+  background-color: #ebf7ea !important;
+}
+
+.p-accordion-header.post a,
+.accordion-content-post .p-accordion-content {
+  background-color: #f7f8ea !important;
+}
+
+.p-accordion-header.put a,
+.accordion-content-put .p-accordion-content {
+  background-color: #f9fcef !important;
+}
+
+.tag-api {
+  padding: 5px;
+  width: 70px;
+  text-align: center;
+  border: solid thin;
+  border-radius: 5px;
+  color: white;
+}
+
+.tag-api.get {
+  background: var(--primary-color);
+}
+
+.tag-api.post {
+  background: var(--secondary-color);
+}
+
+.tag-api.put {
+  background: var(--forth-color);
+}
+
+.tag-api.delete {
+  background: var(--third-color);
+}
+
+.p-tag.p-component {
+  width: 55px !important;
+}
+
+.api-summary {
+  font-weight: 400;
+}
+
+.api-param,
+.api-responses {
+  font-size: 17px;
+  color: #3b4151;
+  font-weight: bold;
+}
+
+.param-name {
+  font-size: 17px;
+  color: #3b4151;
+  font-weight: bold;
+}
+
+.param-required {
+  font-size: 12px;
+  color: red;
+}
+
+.col-lg-10 input {
+  width: 30%;
+}
+
+.request-url {
+  color: white;
+  font-weight: 600;
+  background: #41444e;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.response-body,
+.request-body-example {
+  color: white;
+  font-weight: 600;
+  background: #41444e;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.server-response {
+  display: none;
+}
+
+.server-response.active {
+  display: block;
+}
+
+.request-body-example,
+.request-body-input {
+  display: none;
+}
+
+.request-body-input.hide,
+.request-body-example.hide {
+  display: none !important;
+}
+
+.exp-title,
+.model-title {
+  color: #495057;
+  cursor: pointer;
+}
+
+.exp-title.active,
+.model-title.active {
+  color: black;
+  font-weight: 600;
+}
+
+.request-body-example.active,
+.request-body-input.active {
+  display: block;
+}
+
+.request-body-input.active {
+  width: 100%;
+  padding: 10px;
+}
+
+.model.show {
+  display: block;
+}
+
+.model {
+  display: none;
+}
+
+.model-detail {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.form-control.required {
+  border-color: red;
+}
+
+@media screen and (max-width: 600px) {
+  .api-summary,
+  .api-name {
+    max-width: 300px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .api-summary,
+  .api-name {
+    max-width: 190px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .api-summary,
+  .api-name {
+    max-width: 130px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .api-summary,
+  .api-name {
+    max-width: 100px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .api-summary,
+  .api-name {
+    max-width: 90px;
+  }
+}

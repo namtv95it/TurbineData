@@ -1,0 +1,6 @@
+{
+        path: "sam/sam0105", element: <RoleGuard><HighChartsSample /></RoleGuard>, children: [
+            { path: "js-charts", element: <LineCharts /> },
+            { path: "stock-charts", element: <StockCharts /> },
+        ]
+    },

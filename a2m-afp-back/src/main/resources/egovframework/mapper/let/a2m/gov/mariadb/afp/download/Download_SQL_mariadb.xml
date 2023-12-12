@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DownloadDAO">
+
+    <resultMap id="hisResultMap" type="map">
+        <result property="id" column="id" />
+        <result property="downloadedDate" column="downloadedDate" />
+        <result property="projectNameCustom" column="projectNameCustom" />
+        <result property="projectId" column="projectId" />
+        <result property="projectName" column="projectName" />
+        <result property="updatedDate" column="updatedDate" />
+        <result property="version" column="version" />
+        <result property="downloadUrl" column="downloadUrl" />
+        <result property="nameKr" column="nameKr" />
+        <collection property="tags"  ofType="map" javaType="ArrayList"  >
+            <result property="tagId" column="tagId" />
+            <result property="tagName" column="tagName" />
+            <result property="tagNumberColor" column="tagNumberColor" />
+        </collection>
+        <collection property="downHisDependency"  ofType="map" javaType="ArrayList" >
+            <result property="keyName" column="keyName" />
+            <result property="value" column="value" />
+        </collection>
+        <collection property="lstLibrary" ofType="map" javaType="ArrayList">
+            <result property="libId" column="libId"/>
+            <result property="libName" column="libName"/>
+            <result property="optionType" column="optionType"/>
+            <collection property="lstDependency" ofType="map" javaType="ArrayList">
+                <result property="dependId" column="dependId"/>
+                <result property="dependName" column="dependName"/>
+                <result property="dependValue" column="dependValue"/>
+            </collection>
+        </collection>
+    </resultMap>
+    
+    <resultMap type="map" id="tagsRm">
+    	<result property="tagId" column="tagId" />
+    	<result property="tagName" column="tagName" />
+        <result property="tagNumberColor" column="tagNumberColor" />
+    </resultMap>
+    
+    <resultMap type="map" id="downHisDependencyRm">
+    	<result property="keyName" column="keyName" />
+        <result property="value" column="value" />
+    </resultMap>
+    
+    <resultMap type="map" id="lstLibraryRm">
+    	<result property="libId" column="libId" />
+        <result property="libName" column="libName"/>
+        <result property="optionType" column="optionType"/>
+        <collection property="lstDependency" ofType="map" javaType="ArrayList">
+            <result property="dependId" column="dependId"/>
+            <result property="dependName" column="dependName"/>
+            <result property="dependValue" column="dependValue"/>
+        </collection>
+    </resultMap>
+    
+    <resultMap id="hisResultMapV2" type="map">
+        <result property="id" column="id" />
+        <result property="downloadedDate" column="downloadedDate" />
+        <result property="projectNameCustom" column="projectNameCustom" />
+        <result property="projectId" column="projectId" />
+        <result property="projectName" column="projectName" />
+        <result property="updatedDate" column="updatedDate" />
+        <result property="version" column="version" />
+        <result property="downloadUrl" column="downloadUrl" />
+        <result property="nameKr" column="nameKr" />
+        <collection property="tags"  ofType="map" column="projectId" javaType="ArrayList" select="getListTagsV2" >
+            
+        </collection>
+        <collection property="downHisDependency" column="id" ofType="map" javaType="ArrayList" select="getListHisDepenV2" >
+            
+        </collection>
+        <collection property="lstLibrary" ofType="map" column="projectId" javaType="ArrayList" select="getListLigV2">
+            
+        </collection>
+    </resultMap>
+    
+    <select id="getListTagsV2" parameterType="Long" resultMap="tagsRm">
+		SELECT 
+		T3.ID as tagId,
+        T3.NAME as tagName,
+        T3.NUMBER_COLOR as tagNumberColor 
+		FROM FRAME_PROJECT_TAGS T2
+        JOIN FRAME_TAGS T3 ON T3.ID = T2.TAGS_ID
+        WHERE T2.PROJECT_ID = #{id}
+	</select>
+    <select id="getListHisDepenV2" parameterType="Long" resultMap="downHisDependencyRm">
+		SELECT 
+		FDHD.KEY_NAME as keyName,
+        FDHD.VALUE as value
+		FROM FRAME_DOWNLOAD_HISTORY_DEPENDENCY FDHD
+        WHERE FDHD.DOWNLOAD_HISTORY_ID = #{id}
+	</select>
+    <select id="getListLigV2" parameterType="Long" resultMap="lstLibraryRm">
+		SELECT 
+		FL.ID as libId,
+        FL.LIB_NAME as libName,
+        FL.OPTION_TYPE as optionType,
+        FD.ID as dependId,
+        FD.NAME as dependName,
+        FD.VALUE as dependValue 
+		FROM FRAME_PROJECT_LIBRARY FPL
+        JOIN FRAME_LIBRARY FL ON FL.ID = FPL.LIBRARY_ID
+        LEFT JOIN FRAME_DEPENDENCY FD ON FD.LIBRARY_ID = FPL.LIBRARY_ID
+        WHERE FPL.PROJECT_ID = #{id}
+	</select>
+    
+    <select id="getHistoryDownloadV2" resultMap="hisResultMapV2" parameterType="map">
+        SELECT
+        FDH.ID as id,
+        FDH.DOWNLOADED_DATE as downloadedDate,
+        FDH.PROJECT_NAME_CUS as projectNameCustom,
+        T1.ID as projectId,
+        T1.NAME as projectName,
+        T1.UPDATED_DATE as updatedDate,
+        T1.VERSION as version,
+        T1.DOWNLOAD_URL as downloadUrl,
+        T1.NAME_KR as nameKr
+        FROM FRAME_DOWNLOAD_HISTORY FDH
+        LEFT JOIN FRAME_PROJECT T1 ON T1.ID = FDH.PROJECT_ID
+        WHERE FDH.DOWNLOADED_BY = #{uid}
+        ORDER BY downloadedDate DESC
+    </select>
+
+    <select id="getHistoryDownload" resultMap="hisResultMap" parameterType="map">
+        SELECT
+        FDH.ID as id,
+        FDH.DOWNLOADED_DATE as downloadedDate,
+        FDH.PROJECT_NAME_CUS as projectNameCustom,
+        T1.ID as projectId,
+        T1.NAME as projectName,
+        T1.DESCRIPTION as description,
+        T1.ORGANIZATION as organization,
+        T1.UPDATED_DATE as updatedDate,
+        T1.VERSION as version,
+        T1.DOWNLOAD_URL as downloadUrl,
+        T1.NAME_KR as nameKr,
+        T3.ID as tagId,
+        T3.NAME as tagName,
+        T3.NUMBER_COLOR as tagNumberColor,
+        FDHD.KEY_NAME as keyName,
+        FDHD.VALUE as value,
+        FL.ID as libId,
+        FL.LIB_NAME as libName,
+        FL.OPTION_TYPE as optionType,
+        FD.ID as dependId,
+        FD.NAME as dependName,
+        FD.VALUE as dependValue
+        FROM FRAME_DOWNLOAD_HISTORY FDH
+        LEFT JOIN FRAME_DOWNLOAD_HISTORY_DEPENDENCY FDHD ON FDHD.DOWNLOAD_HISTORY_ID = FDH.ID
+        LEFT JOIN FRAME_PROJECT T1 ON T1.ID = FDH.PROJECT_ID
+        LEFT JOIN FRAME_PROJECT_TAGS T2 ON T1.ID = T2.PROJECT_ID
+        LEFT JOIN FRAME_TAGS T3 ON T3.ID = T2.TAGS_ID
+        LEFT JOIN FRAME_PROJECT_LIBRARY FPL ON FPL.PROJECT_ID = FDH.PROJECT_ID
+        LEFT JOIN FRAME_LIBRARY FL ON FL.ID = FPL.LIBRARY_ID
+        LEFT JOIN FRAME_DEPENDENCY FD ON FD.LIBRARY_ID = FPL.LIBRARY_ID
+        WHERE FDH.DOWNLOADED_BY = #{uid}
+        ORDER BY downloadedDate DESC
+    </select>
+
+    <select id="getLibraryByLibName" parameterType="String" resultType="egovframework.com.a2m.egov.model.Library">
+        SELECT * FROM FRAME_LIBRARY WHERE LIB_NAME = #{libName}
+    </select>
+
+    <select id="checkExitsProject" parameterType="String" resultType="map">
+        SELECT * FROM FRAME_PROJECT WHERE ID = #{id}
+    </select>
+
+    <insert id="saveDownloadHistory" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+        INSERT INTO FRAME_DOWNLOAD_HISTORY
+        (DOWNLOADED_BY,
+        DOWNLOADED_DATE,
+        PROJECT_ID,
+        PROJECT_NAME_CUS)
+        VALUES
+        (#{downloadBy},
+        #{downloadDate},
+        #{projectId},
+        #{projectNameCus});
+    </insert>
+    
+    <insert id="saveDownloadHisDependency" parameterType="map">
+        INSERT INTO FRAME_DOWNLOAD_HISTORY_DEPENDENCY
+        (KEY_NAME,
+        VALUE,
+        DOWNLOAD_HISTORY_ID)
+        VALUES
+        (#{keyName},
+        #{value},
+        #{historyId});
+    </insert>
+
+    <select id="getProjectById" parameterType="String" resultMap="projectResultMap">
+        SELECT
+        FP.ID as id,
+        FP.NAME as projectName,
+        FP.DESCRIPTION as description,
+        FP.ORGANIZATION as organization,
+        FP.UPDATED_DATE as updatedDate,
+        FP.VERSION as version,
+        FP.NAME_KR as projectNameKR,
+        FP.DOWNLOAD_URL as downloadUrl,
+        FT.ID as tagId,
+        FT.NAME as tagName,
+        FT.NUMBER_COLOR as numberColor,
+        FT.ENABLED as enabled,
+        FPM.MANUALS as manuals
+        FROM FRAME_PROJECT FP
+        INNER JOIN FRAME_PROJECT_TAGS FPT ON FPT.PROJECT_ID = FP.ID
+        INNER JOIN FRAME_TAGS FT ON FT.ID = FPT.TAGS_ID
+        INNER JOIN FRAME_PROJECT_MANUALS FPM ON FP.ID = FPM.PROJECT_ID
+        WHERE FP.ID = #{projectId}
+        AND FT.ENABLED = 1
+    </select>
+
+    <resultMap id="projectResultMap" type="map">
+        <result property="id" column="id"/>
+        <result property="projectName" column="projectName"/>
+        <result property="description" column="description"/>
+        <result property="organization" column="organization"/>
+        <result property="updatedDate" column="updatedDate"/>
+        <result property="version" column="version"/>
+        <result property="projectNameKr" column="projectNameKr"/>
+        <result property="manuals" column="manuals"/>
+        <result property="downloadUrl" column="downloadUrl"/>
+        <collection property="lstTag"  ofType="map" javaType="ArrayList" >
+            <result property="tagId" column="tagId" />
+            <result property="tagName" column="tagName" />
+            <result property="numberColor" column="numberColor"/>
+            <result property="enable" column="enable"/>
+        </collection>
+    </resultMap>
+
+    <select id="getLstLib" resultMap="libResultMap">
+        SELECT FL.ID as libId,
+               FL.LIB_NAME as libValue,
+               FL.NAME as libName,
+               FL.OPTION_TYPE as optionType,
+               FD.ID as dependId,
+               FD.NAME as dependName,
+               FD.VALUE as dependValue,
+               FD.ENABLE as enable,
+               FDL.PROJECT_ID as projectId
+        FROM FRAME_LIBRARY FL
+        INNER JOIN FRAME_DEPENDENCY FD ON FD.LIBRARY_ID = FL.ID
+        INNER JOIN FRAME_PROJECT_LIBRARY FDL ON FDL.LIBRARY_ID = FL.ID
+        WHERE FD.ENABLE != 0
+        ORDER BY FL.ORDER_NUMBER ASC
+    </select>
+
+    <resultMap id="libResultMap" type="map">
+        <result property="libId" column="libId" />
+        <result property="libValue" column="libValue" />
+        <result property="libName" column="libName" />
+        <result property="optionType" column="optionType" />
+        <result property="projectId" column="projectId" />
+        <collection property="lstDepend"  ofType="map" javaType="ArrayList" >
+            <result property="dependId" column="dependId" />
+            <result property="dependName" column="dependName" />
+            <result property="dependValue" column="dependValue" />
+            <result property="enabled" column="enabled" />
+        </collection>
+    </resultMap>
+
+    <select id="getDependManualsById" parameterType="map" resultType="map">
+        SELECT MANUALS as manuals FROM FRAME_DEPENDENCY WHERE ID = #{dependId}
+    </select>
+
+</mapper>

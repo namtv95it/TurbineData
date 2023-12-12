@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProjectDAO">
+
+	<select id="search" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectSearchDto" resultMap="projectDtoRm">
+		SELECT p.*, pd.URI, pd.PROJECT_TYPE_ID,
+		CASE
+			WHEN b.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_BOOKMARK
+		FROM AFP_POST p 
+		JOIN AFP_POST_DETAIL pd ON p.ID = pd.POST_ID
+		<choose>
+			<when test="typeSearch == 'P_03'">
+				JOIN TCCO_STD std ON pd.PROJECT_TYPE_ID = std.COMM_CD AND pd.PROJECT_TYPE_ID = '05-01'
+			</when>
+			<when test="typeSearch == 'P_04'">
+				JOIN TCCO_STD std ON pd.PROJECT_TYPE_ID = std.COMM_CD AND pd.PROJECT_TYPE_ID = '05-02'
+			</when>
+			<when test="typeSearch == 'P_05'">
+				JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+			</when>
+		</choose>
+		<choose>
+			<when test="typeSearch != 'P_05'">
+				LEFT JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+			</when>
+		</choose>
+		<where>
+			p.IS_DELETED = '0'
+			<if test="typeSearch == 'P_02'">
+				AND p.CREATED_BY = #{userUid}
+			</if>
+			<if test="keySearch != null">
+				AND LOWER(p.TITLE) LIKE LOWER(concat('%', #{keySearch}, '%'))
+			</if>
+		</where>
+		ORDER BY p.CREATED_DATE desc
+	</select>
+	
+	<resultMap type="egovframework.com.a2m.egov.model.afp.project.ProjectDto" id="projectDtoRm">
+		<id property="id" column="ID" />
+		<result property="title" column="TITLE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="projectType" column="PROJECT_TYPE_ID" />
+		<result property="uri" column="URI" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="viewNumber" column="VIEW_NUMBER" />
+		<result property="isBookmark" column="IS_BOOKMARK" />
+	</resultMap>
+	
+	<select id="getPostById" parameterType="Long" resultMap="projectDtoRm">
+		SELECT p.*, pd.URI, pd.PROJECT_TYPE_ID
+		FROM AFP_POST p
+		JOIN AFP_POST_DETAIL pd ON p.ID = pd.POST_ID
+		WHERE p.ID = #{id} AND p.IS_DELETED = '0'
+	</select>
+	
+	<insert id="insert" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO AFP_POST
+		(
+			CREATED_BY, 
+			CREATED_DATE, 
+			DESCRIPTION, 
+			TITLE, 
+			VIEW_NUMBER, 
+			IS_DELETED,
+			COMM_CD_POST_TYPE_ID
+		)
+		VALUES
+		(
+			#{createdBy}, 
+			CURRENT_TIMESTAMP, 
+			#{description}, 
+			#{title}, 
+			0, 
+			0,
+			#{postType}
+		)
+	</insert>
+	
+	<insert id="insertPostDetail" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto">
+		INSERT INTO AFP_POST_DETAIL
+		(
+			URI, 
+			POST_ID, 
+			PROJECT_TYPE_ID
+		)
+		VALUES
+		(
+			#{uri}, 
+			#{id}, 
+			#{projectType}
+		)
+	</insert>
+	
+	<update id="update" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto">
+		UPDATE AFP_POST
+		<set>
+	      <if test="title != null">TITLE = #{title},</if>
+	      <if test="description != null">DESCRIPTION = #{description},</if>
+	      <if test='crud != null and crud == "D"'>IS_DELETED = 1,</if>
+	      UPDATED_BY = #{updatedBy},
+	      UPDATED_DATE = CURRENT_TIMESTAMP
+	    </set>
+	    WHERE ID = #{id}
+	</update>
+	
+	<update id="updatePostDetail" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto">
+		UPDATE AFP_POST_DETAIL
+		<set>
+	      <if test="uri != null">URI = #{uri},</if>
+	      <if test="projectType != null">PROJECT_TYPE_ID = #{projectType}</if>
+	    </set>
+	    WHERE POST_ID = #{id}
+	</update>
+	
+	<insert id="bookmark" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto">
+		INSERT INTO AFP_BOOKMARK
+		(
+			USER_UID, 
+			POST_ID,
+			CREATED_DATE
+		)
+		VALUES
+		(
+			#{createdBy},
+			#{id},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	
+	<delete id="unBookmark" parameterType="egovframework.com.a2m.egov.model.afp.project.ProjectDto">
+		DELETE FROM AFP_BOOKMARK
+		WHERE USER_UID = #{createdBy} AND POST_ID = #{id}
+	</delete>
+	
+	<select id="getProjectById" parameterType="map" resultMap="projectDtoRm">
+		SELECT p.*, pd.URI, pd.PROJECT_TYPE_ID,
+		CASE
+			WHEN b.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_BOOKMARK
+		FROM AFP_POST p
+		JOIN AFP_POST_DETAIL pd ON p.ID = pd.POST_ID
+		LEFT JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+		WHERE p.ID = #{id} AND p.IS_DELETED = '0'
+	</select>
+	
+</mapper>

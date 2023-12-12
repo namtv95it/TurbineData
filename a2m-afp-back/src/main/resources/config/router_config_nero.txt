@@ -1,0 +1,1 @@
+{ path: "sam/sam0107", element: <RoleGuard><Sam0107 /></RoleGuard> },

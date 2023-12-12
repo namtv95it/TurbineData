@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userInfoDAO">
+
+<!-- Get user roles by userUid -->  
+	<select id="getMenusByUser" parameterType="map" resultType="egovframework.com.a2m.egov.model.response.MenuRoleInfoResponse">
+		SELECT T3.MENU_ID as menuId,
+			T3.CREATED_BY as createdBy,
+			T3.CREATED_DATE as createdDate,
+			T3.DESCRIPTION as description,
+			T3.LEV as lev,
+			T3.MENU_NM as menuNm,
+			T3.MENU_NM_EN as menuNmEn,
+			T3.MENU_NM_VI as menuNmVi,
+			T3.MENU_TYPE as menuType,
+			T3.ORD_NO as ordNo,
+			T3.UP_MENU_ID as upMenuId,
+			T3.UPDATED_BY as updatedBy,
+			T3.UPDATED_DATE as updatedDate,
+			T3.URL as url,
+			T3.USE_YN as useYn,
+			T2.DEL_YN as delYn,
+			T2.EXC_DN_YN as excDnYn,
+			T2.MNG_YN as mngYn,
+			T2.MOD_YN as modYn,
+			T2.PNT_YN as pntYn,
+			T2.READ_YN as readYn,
+			T2.WRT_YN as wrtYn
+		FROM TSST_ROLE T1
+			LEFT JOIN TSST_ROLE_MENU T2 ON T1.ROLE_ID = T2.ROLE_ID
+			LEFT JOIN TSST_MENU T3 ON T2.MENU_ID = T3.MENU_ID
+		WHERE (
+			T1.ROLE_ID IN ( 
+			 	<!-- <foreach item="roleId" collection="roleIds " separator="," >
+        			#{roleId}
+    			</foreach> -->
+				SELECT A1.ROLE_ID 
+				FROM TSST_USER_ROLE A1 
+					LEFT JOIN TSST_ROLE A2 ON A1.ROLE_ID = A2.ROLE_ID
+				WHERE A1.USER_UID = #{userUid} AND A2.USE_YN = #{useYn}
+			) AND T3.USE_YN = #{useYn}
+		) 
+		 
+	</select>
+	
+	<select id="countUserRole" parameterType="String" resultType="Integer">
+		SELECT COUNT(*)
+		FROM TSST_USER_ROLE 
+		WHERE USER_UID = #{userUid}
+	</select>
+	
+	<insert id="insertTsstUserRole" parameterType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest">
+		INSERT INTO
+		TSST_USER_ROLE
+		(
+			ROLE_ID,
+			USER_UID
+		)
+		VALUES(
+			#{roleId},
+			#{userUid}
+		)
+	</insert>
+	
+	<select id="getListRoleByUserUid" parameterType="String" resultType="egovframework.com.a2m.egov.model.TsstRole">
+		SELECT R.ROLE_ID as roleId, R.ROLE_NM as roleNm 
+		FROM TSST_USER_ROLE UR
+		JOIN TSST_ROLE R ON UR.ROLE_ID = R.ROLE_ID
+		WHERE UR.USER_UID = #{userUid} AND R.USE_YN = 'Y'
+	</select>
+	
+	<select id="getUserRoles" parameterType="string" resultType="string">
+		SELECT GROUP_CONCAT(R.ROLE_ID)
+	    FROM TSST_USER_ROLE UR
+		JOIN TSST_ROLE R ON UR.ROLE_ID = R.ROLE_ID
+		WHERE UR.USER_UID = #{userUid} AND R.USE_YN = 'Y'
+	</select>
+</mapper>

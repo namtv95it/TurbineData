@@ -1,0 +1,9 @@
+.p-tabview .p-tabview-panels{
+    padding: 0;
+}
+.p-tabview .p-tabview-panels{
+    background-color: #ffffff00;
+}
+.selected-row{
+    background-color: #e3e5e7;
+}

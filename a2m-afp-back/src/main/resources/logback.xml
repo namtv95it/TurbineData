@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[logback]%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<property name="HOME_LOG" value="/u01/afp/framework/back/logs/afp.log" />
+
+	<appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${HOME_LOG}</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>/u01/afp/framework/back/logs/archived/afp.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+			<!-- each archived file, size max 10MB -->
+			<maxFileSize>10MB</maxFileSize>
+			<!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+			<totalSizeCap>20GB</totalSizeCap>
+			<!-- 360 days to keep -->
+			<maxHistory>360</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="java.sql" level="DEBUG" />
+	<logger name="egovframework" level="DEBUG" />
+	<logger name="org.egovframe" level="DEBUG" />
+	<logger name="jdbc.sqltiming" level="DEBUG" />
+	<logger name="org.springframework" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE-ROLLING" />
+	</root>
+
+</configuration>

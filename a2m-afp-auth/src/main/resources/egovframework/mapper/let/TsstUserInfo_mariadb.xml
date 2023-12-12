@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userInfoDAO">
+
+	<insert id="insertTsstUserInfo" parameterType="egovframework.a2m.egov.model.request.SignUpRequest" useGeneratedKeys="true" keyProperty="userInfoId">
+		INSERT INTO TSST_USER_INFO(
+			EMAIL, 
+			CELL_PHONE, 
+			DOB, 
+			FULL_NAME, 
+			ADDRESS, 
+			GENDER, 
+			IMG_PATH, 
+			2FA_ENABLE, 
+			2FA_KEY,
+			EMAIL_VERIFY_KEY,
+			ORGANIZATION
+		) 
+		VALUES (
+			#{email}, 
+			#{cellPhone}, 
+			#{dob}, 
+			#{fullName}, 
+			#{address}, 
+			#{gender}, 
+			#{imgPath}, 
+			#{twoFAEnable}, 
+			#{twoFAKey},
+			#{emailVerifyKey},
+			#{organization}
+		)
+	</insert>
+	
+		<insert id="insertUserInfo" parameterType="egovframework.a2m.egov.model.request.UserRequest" useGeneratedKeys="true" keyProperty="userInfoId">
+		INSERT INTO TSST_USER_INFO(
+			EMAIL, 
+			CELL_PHONE, 
+			DOB, 
+			FULL_NAME, 
+			ADDRESS, 
+			GENDER, 
+			IMG_PATH, 
+			2FA_ENABLE, 
+			2FA_KEY,
+			EMAIL_VERIFY_KEY,
+			ORGANIZATION
+		) 
+		VALUES (
+			#{email}, 
+			#{cellPhone}, 
+			#{dob}, 
+			#{fullName}, 
+			#{address}, 
+			#{gender}, 
+			#{imgPath}, 
+			#{twoFAEnable}, 
+			#{twoFAKey},
+			#{emailVerifyKey},
+			#{organization}
+		)
+	</insert>
+	
+	<update id="updateUserInfo" parameterType="egovframework.a2m.egov.model.request.UserRequest">
+		UPDATE TSST_USER_INFO
+		SET USER_INFO_ID = USER_INFO_ID
+		<if test="address != null and address != ''">
+			,ADDRESS = #{address}
+		</if>
+		<if test="cellPhone != null and cellPhone != ''">
+			,CELL_PHONE = #{cellPhone}
+		</if>
+		<if test="dob != null">
+			,DOB = #{dob}
+		</if>
+		<if test="email != null and email != ''">
+			,EMAIL = #{email}
+		</if>
+		<if test="fullName != null and fullName != ''">
+			,FULL_NAME = #{fullName}
+		</if>
+		<if test="gender != null ">
+			,GENDER = #{gender}
+		</if>
+		<if test="imgPath != null and imgPath != ''">
+			,IMG_PATH = #{imgPath}
+		</if>
+		<if test="organization != null and organization != ''">
+			,ORGANIZATION = #{organization}
+		</if>
+		 <if test="twoFAEnable != null and twoFAEnable != ''">
+            ,2FA_ENABLE = #{twoFAEnable}
+        </if>
+		<if test="position != null and position != ''">
+			,POSITION = #{position}
+		</if>
+		WHERE USER_INFO_ID = #{userInfoId}
+	</update>
+	
+	<delete id="deleteTsstUserInfo" parameterType="Long">
+		DELETE FROM TSST_USER_INFO 
+		WHERE USER_INFO_ID = #{userInfoId}
+	</delete>
+	
+</mapper>

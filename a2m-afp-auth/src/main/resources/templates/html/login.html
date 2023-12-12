@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head th:insert="fragments/header-fragment.html"></head>
+<body id="ROOT_ID">
+    <main>
+        <!-- 공통 bg -->
+        <div class="bg"></div>
+
+        <!-- login -->
+        <div class="login-wrap">
+            <div class="input id">
+                <input type="text" id="USERNAME" placeholder="Enter username">
+            </div>
+            <div class="input pw">
+                <input type="password" placeholder="Enter password" id="PASSWORD">
+            </div>
+
+            <div class="check-lst">
+                    <span class="remember">
+                        <input type="checkbox" class="checkbox" value="" id="auth-remember-check">
+                        <label for="auth-remember-check">Remember Me</label>
+                    </span>
+                <a href="javascript:void(0)" class="forgot">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="LOGIN_BTN">Login</button>
+<!--            <div>-->
+<!--                <button id="FACEBOOK_LOGIN_BTN" type="button" class="btn btn-primary btn-icon waves-effect waves-light" ><i class="ri-facebook-fill fs-16"></i></button>-->
+<!--                <button id="GOOGLE_LOGIN_BTN" type="button" class="btn btn-danger btn-icon waves-effect waves-light" ><i class="ri-google-fill fs-16"></i></button>-->
+<!--                <button id="KAKAO_LOGIN_BTN" style="background-color: #FFE812; border-color: #FFE812" type="button" class="btn btn-warning btn-icon waves-effect waves-light" >-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.88 122.88" style="enable-background:new 0 0 122.88 122.88" xml:space="preserve">-->
+<!--                                                        		<style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFE812;} .st1{fill-rule:evenodd;clip-rule:evenodd;}</style>-->
+<!--                        <g>-->
+<!--                                                        			<path class="st0" d="M122.88,113.28c0,5.3-4.3,9.6-9.6,9.6H9.6c-5.3,0-9.6-4.3-9.6-9.6V9.6C0,4.3,4.3,0,9.6,0h103.68 c5.3,0,9.6,4.3,9.6,9.6V113.28L122.88,113.28L122.88,113.28z"/>-->
+<!--                            <path class="st1" d="M61.44,17.28c-27.57,0-49.92,17.62-49.92,39.36c0,14.05,9.34,26.39,23.4,33.35 c-0.76,2.64-4.91,16.97-5.08,18.09c0,0-0.1,0.85,0.45,1.17c0.55,0.32,1.19,0.07,1.19,0.07c1.57-0.22,18.21-11.91,21.09-13.94 c2.88,0.41,5.84,0.62,8.87,0.62c27.57,0,49.92-17.62,49.92-39.36C111.36,34.9,89.01,17.28,61.44,17.28L61.44,17.28L61.44,17.28z"/>-->
+<!--                            <path class="st0" d="M33.84,70.38c-1.59,0-2.88-1.23-2.88-2.75V50.52h-4.49c-1.56,0-2.83-1.27-2.83-2.82 c0-1.55,1.27-2.82,2.83-2.82h14.75c1.56,0,2.83,1.27,2.83,2.82c0,1.55-1.27,2.82-2.83,2.82h-4.49v17.11 C36.72,69.15,35.43,70.38,33.84,70.38L33.84,70.38z M59.09,70.34c-1.2,0-2.12-0.49-2.4-1.27l-1.43-3.73l-8.78,0l-1.43,3.74 c-0.28,0.78-1.19,1.27-2.4,1.27c0,0,0,0,0,0c-0.63,0-1.25-0.14-1.83-0.4c-0.79-0.37-1.56-1.37-0.68-4.09l6.89-18.13 c0.48-1.38,1.96-2.8,3.83-2.84c1.88,0.04,3.36,1.46,3.84,2.85l6.89,18.12c0.88,2.72,0.11,3.73-0.68,4.1 C60.35,70.21,59.73,70.34,59.09,70.34C59.1,70.34,59.09,70.34,59.09,70.34C59.09,70.34,59.09,70.34,59.09,70.34L59.09,70.34 L59.09,70.34z M55.59,59.84l-4.71-7.78L48,60.24h5.75L55.59,59.84L55.59,59.84z M66.24,69.96c-1.52,0-2.76-1.18-2.76-2.64V47.76 c0-1.59,1.32-2.88,2.94-2.88c1.62,0,2.94,1.29,2.94,2.88v16.92h6.12c1.52,0,2.76,1.18,2.76,2.64s-1.24,2.64-2.76,2.64H66.24 L66.24,69.96z M82.24,70.34c-1.59,0-2.88-1.29-2.88-2.88v-19.7c0-1.59,1.29-2.88,2.88-2.88s2.88,1.29,2.88,2.88v6.19l8.04-8.04 c0.41-0.41,0.98-0.64,1.6-0.64c0.72,0,1.44,0.31,1.98,0.85c0.5,0.5,0.81,1.15,0.85,1.83c0.04,0.68-0.18,1.3-0.64,1.75l-6.56,6.56 l7.09,9.39c0.38,0.5,0.58,1.1,0.58,1.73c0,0.14-0.01,0.27-0.03,0.41c-0.1,0.76-0.51,1.44-1.12,1.9c-0.5,0.38-1.1,0.58-1.73,0.58 c0,0,0,0-0.01,0c0,0-0.01,0-0.01,0c-0.9,0-1.75-0.42-2.29-1.14l-6.75-8.95l-1,1v6.28C85.12,69.05,83.83,70.34,82.24,70.34 L82.24,70.34L82.24,70.34z"/>-->
+<!--                                                        		</g>-->
+<!--                                                        	</svg>-->
+<!--                </button>-->
+<!--                <button id="NAVER_LOGIN_BTN" style="background-color: #fff" type="button" class="btn btn-dark btn-icon waves-effect waves-light" >-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24">-->
+<!--                        <title>Naver</title>-->
+<!--                        <path d="M1.6 0S0 0 0 1.6v20.8S0 24 1.6 24h20.8s1.6 0 1.6-1.6V1.6S24 0 22.4 0zm3.415 5.6h4.78l4.425 6.458V5.6h4.765v12.8h-4.78L9.78 11.943V18.4H5.015Z"/>-->
+<!--                    </svg>-->
+<!--                </button>-->
+<!--            </div>-->
+        </div>
+    </main>
+<!--    <div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">-->
+<!--        <div class="bg-overlay"></div>-->
+<!--        <div class="auth-page-content overflow-hidden pt-lg-5">-->
+<!--            <div class="container">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-lg-12">-->
+<!--                        <div class="card overflow-hidden">-->
+<!--                            <div class="row g-0">-->
+<!--                                <div class="col-lg-6">-->
+<!--                                    <div th:replace="fragments/carousel-fragment.html"></div>-->
+<!--                                </div>-->
+<!--                                <div class="col-lg-6">-->
+<!--                                    <div class="p-lg-5 p-4">-->
+<!--                                        <div>-->
+<!--                                            <h5 class="text-primary">Welcome Back !</h5>-->
+<!--                                            <p class="text-muted">Sign in to continue to AtwoM.</p>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="mt-4">-->
+<!--                                            <form>-->
+<!--                                                <div class="mb-3">-->
+<!--                                                    <label for="username" class="form-label">Username</label>-->
+<!--                                                    <input type="text" class="form-control" id="USERNAME" placeholder="Enter username">-->
+<!--                                                </div>-->
+
+<!--                                                <div class="mb-3">-->
+<!--                                                    <div class="float-end">-->
+<!--                                                        <a href="javascript:void(0)" class="text-muted" id="FORGOT_PASSWORD_BTN">Forgot password?</a>-->
+<!--                                                    </div>-->
+<!--                                                    <label class="form-label" for="password-input">Password</label>-->
+<!--                                                    <div class="position-relative auth-pass-inputgroup mb-3">-->
+<!--                                                        <input type="password" class="form-control pe-5" placeholder="Enter password" id="PASSWORD">-->
+<!--                                                        <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted shadow-none" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+<!--                                                <div class="form-check">-->
+<!--                                                    <input class="form-check-input" type="checkbox" value="" id="auth-remember-check">-->
+<!--                                                    <label class="form-check-label" for="auth-remember-check">Remember me</label>-->
+<!--                                                </div>-->
+
+<!--                                                <div class="mt-4">-->
+<!--                                                    <button class="btn btn-success w-100" id="LOGIN_BTN" type="button">Sign In</button>-->
+<!--                                                </div>-->
+
+<!--                                                <div class="mt-4 text-center">-->
+<!--                                                    <div class="signin-other-title">-->
+<!--                                                        <h5 class="fs-13 mb-4 title">Sign In with</h5>-->
+<!--                                                    </div>-->
+
+<!--                                                    <div>-->
+<!--                                                        <button id="FACEBOOK_LOGIN_BTN" type="button" class="btn btn-primary btn-icon waves-effect waves-light" ><i class="ri-facebook-fill fs-16"></i></button>-->
+<!--                                                        <button id="GOOGLE_LOGIN_BTN" type="button" class="btn btn-danger btn-icon waves-effect waves-light" ><i class="ri-google-fill fs-16"></i></button>-->
+<!--                                                        <button id="KAKAO_LOGIN_BTN" style="background-color: #FFE812; border-color: #FFE812" type="button" class="btn btn-warning btn-icon waves-effect waves-light" >-->
+<!--                                                        	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 122.88 122.88" style="enable-background:new 0 0 122.88 122.88" xml:space="preserve">-->
+<!--                                                        		<style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFE812;} .st1{fill-rule:evenodd;clip-rule:evenodd;}</style>-->
+<!--                                                        		<g>-->
+<!--                                                        			<path class="st0" d="M122.88,113.28c0,5.3-4.3,9.6-9.6,9.6H9.6c-5.3,0-9.6-4.3-9.6-9.6V9.6C0,4.3,4.3,0,9.6,0h103.68 c5.3,0,9.6,4.3,9.6,9.6V113.28L122.88,113.28L122.88,113.28z"/>-->
+<!--                                                        			<path class="st1" d="M61.44,17.28c-27.57,0-49.92,17.62-49.92,39.36c0,14.05,9.34,26.39,23.4,33.35 c-0.76,2.64-4.91,16.97-5.08,18.09c0,0-0.1,0.85,0.45,1.17c0.55,0.32,1.19,0.07,1.19,0.07c1.57-0.22,18.21-11.91,21.09-13.94 c2.88,0.41,5.84,0.62,8.87,0.62c27.57,0,49.92-17.62,49.92-39.36C111.36,34.9,89.01,17.28,61.44,17.28L61.44,17.28L61.44,17.28z"/>-->
+<!--                                                        			<path class="st0" d="M33.84,70.38c-1.59,0-2.88-1.23-2.88-2.75V50.52h-4.49c-1.56,0-2.83-1.27-2.83-2.82 c0-1.55,1.27-2.82,2.83-2.82h14.75c1.56,0,2.83,1.27,2.83,2.82c0,1.55-1.27,2.82-2.83,2.82h-4.49v17.11 C36.72,69.15,35.43,70.38,33.84,70.38L33.84,70.38z M59.09,70.34c-1.2,0-2.12-0.49-2.4-1.27l-1.43-3.73l-8.78,0l-1.43,3.74 c-0.28,0.78-1.19,1.27-2.4,1.27c0,0,0,0,0,0c-0.63,0-1.25-0.14-1.83-0.4c-0.79-0.37-1.56-1.37-0.68-4.09l6.89-18.13 c0.48-1.38,1.96-2.8,3.83-2.84c1.88,0.04,3.36,1.46,3.84,2.85l6.89,18.12c0.88,2.72,0.11,3.73-0.68,4.1 C60.35,70.21,59.73,70.34,59.09,70.34C59.1,70.34,59.09,70.34,59.09,70.34C59.09,70.34,59.09,70.34,59.09,70.34L59.09,70.34 L59.09,70.34z M55.59,59.84l-4.71-7.78L48,60.24h5.75L55.59,59.84L55.59,59.84z M66.24,69.96c-1.52,0-2.76-1.18-2.76-2.64V47.76 c0-1.59,1.32-2.88,2.94-2.88c1.62,0,2.94,1.29,2.94,2.88v16.92h6.12c1.52,0,2.76,1.18,2.76,2.64s-1.24,2.64-2.76,2.64H66.24 L66.24,69.96z M82.24,70.34c-1.59,0-2.88-1.29-2.88-2.88v-19.7c0-1.59,1.29-2.88,2.88-2.88s2.88,1.29,2.88,2.88v6.19l8.04-8.04 c0.41-0.41,0.98-0.64,1.6-0.64c0.72,0,1.44,0.31,1.98,0.85c0.5,0.5,0.81,1.15,0.85,1.83c0.04,0.68-0.18,1.3-0.64,1.75l-6.56,6.56 l7.09,9.39c0.38,0.5,0.58,1.1,0.58,1.73c0,0.14-0.01,0.27-0.03,0.41c-0.1,0.76-0.51,1.44-1.12,1.9c-0.5,0.38-1.1,0.58-1.73,0.58 c0,0,0,0-0.01,0c0,0-0.01,0-0.01,0c-0.9,0-1.75-0.42-2.29-1.14l-6.75-8.95l-1,1v6.28C85.12,69.05,83.83,70.34,82.24,70.34 L82.24,70.34L82.24,70.34z"/>-->
+<!--                                                        		</g>-->
+<!--                                                        	</svg>-->
+<!--                                                        </button>-->
+<!--                                                        <button id="NAVER_LOGIN_BTN" style="background-color: #fff" type="button" class="btn btn-dark btn-icon waves-effect waves-light" >-->
+<!--                                                        	<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24">-->
+<!--                                                        		<title>Naver</title>-->
+<!--                                                        		<path d="M1.6 0S0 0 0 1.6v20.8S0 24 1.6 24h20.8s1.6 0 1.6-1.6V1.6S24 0 22.4 0zm3.415 5.6h4.78l4.425 6.458V5.6h4.765v12.8h-4.78L9.78 11.943V18.4H5.015Z"/>-->
+<!--                                                        	</svg>-->
+<!--                                                        </button>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+<!--                                            </form>-->
+<!--                                        </div>-->
+
+<!--                                        <div class="mt-5 text-center">-->
+<!--                                            <p class="mb-0">Don't have an account ? <a href="javascript:void(0)" class="fw-semibold text-primary text-decoration-underline" id="SIGNUP_BTN"> Signup</a> </p>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div th:replace="fragments/footer-fragment.html"></div>-->
+<!--    </div>-->
+<!--    -->
+	<div id="OTP_POPUP"></div>
+	<div id="FORGOT_PASSWORD_POPUP"></div>
+	<input class="input100" type="text" id="REDIRECT_URI" th:value="${redirect_uri}" style="display: none">
+	<!-- <input class="input100" type="text" id="PUBLIC_KEY" th:value="${PUBLIC_KEY}" style="display: none"> -->
+	
+	<script src="js/common/common.js"></script>
+	<script src="js/common/elements.js"></script>
+	
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+			initEvent();
+		});
+		
+		function initEvent(){
+			
+			let redirectUrl = $('input#REDIRECT_URI').val();
+			
+			$("button#POPUP_OTP_BTN").click(function(){
+	            $("#myModal").modal('show');
+	        });
+			$('button#LOGIN_BTN').css('cursor', 'pointer').click(login);
+			
+			$('a#SIGNUP_BTN').css('cursor', 'pointer').click(function() {
+				window.location.href = "/sign-up?redirect_uri=" + redirectUrl;
+			});
+			
+			$('input#USERNAME').keyup(function(event) {
+			    if (event.which === 13) {
+			    	login();
+			    }
+			});
+			$('input#PASSWORD').keyup(function(event) {
+			    if (event.which === 13) {
+			    	login();
+			    }
+			});
+			
+			$('a#FORGOT_PASSWORD_BTN').css('cursor', 'pointer').click(handleForgotPassword);
+			
+			$('button#FACEBOOK_LOGIN_BTN').click(function(){
+				window.location.href = BASE_URL + '/oauth2/authorize/facebook?redirect_uri=' + redirectUrl;
+			});
+			
+			$('button#GOOGLE_LOGIN_BTN').click(function(){
+				window.location.href = BASE_URL + '/oauth2/authorize/google?redirect_uri=' + redirectUrl;
+			});
+			
+			$('button#KAKAO_LOGIN_BTN').click(function(){
+				window.location.href = BASE_URL + '/oauth2/authorize/kakao?redirect_uri=' + redirectUrl;
+			});
+			
+			$('button#NAVER_LOGIN_BTN').click(function(){
+				window.location.href = BASE_URL + '/oauth2/authorize/naver?redirect_uri=' + redirectUrl;
+			})
+		}
+		
+		/* function getCookie(cname) {
+		  	let name = cname + "=";
+		  	let decodedCookie = decodeURIComponent(document.cookie);
+		  	let ca = decodedCookie.split(';');
+		  	for(let i = 0; i <ca.length; i++) {
+		    	let c = ca[i];
+		    	while (c.charAt(0) == ' ') {
+		      		c = c.substring(1);
+		    	}
+		    	if (c.indexOf(name) == 0) {
+		      		return c.substring(name.length, c.length);
+		  		}
+		  	}
+		 	 return "";
+		} */
+		
+		function login(){
+			
+			Spinner.show();
+			if (validation()){
+				ShowToast.error("The username or password is null.");
+				Spinner.hide();
+				return;
+			} 
+			setTimeout(() => {
+
+				var request = initParam();
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/login', JSON.stringify(request), 'POST');
+				Spinner.hide();
+				if (data.status == "OTP_2FA"){
+					open2FAPopup();
+				} else if (data.status == "OTP_EMAIL") {
+					handleActiveAccount();
+					/* var url = BASE_URL + '/api/auth/mail-send-otp?email=' + params.email;
+					var response = sys.mariaDB.ajax(url, {}, 'GET', true); */
+				} else if (data.status == "OK"){
+					let res = data.result;
+					handleRedirect(res.accessToken)
+				}else {
+					ShowToast.error(data.messages);
+				}
+		    }, 1000);
+		}
+		
+		function validation(){
+			var request = initParam();
+			if (isEmpty(request.username) || isEmpty(request.password)){
+				return 	true;
+			}
+			return false;
+		}
+		
+		function isEmpty(str){
+			if (str != null && str != undefined && str.trim().length != 0){
+				return false;
+			}
+			return true;
+		}
+		
+		function initParam(){
+			var loginRequest = {};
+			loginRequest.username = $('input#USERNAME').val();
+			loginRequest.password = $('input#PASSWORD').val();
+			loginRequest.redirectUri = $('input#REDIRECT_URI').val();
+			return loginRequest;
+		}
+		 
+		function handleVerifyOtp(){
+			Spinner.show();
+			setTimeout(() => {
+				var request = {};
+				request.otpCode = $("#OTP_CODE").val();
+				request.username = $('input#USERNAME').val();
+				request.password = $('input#PASSWORD').val();
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/2fa-verify-otp', JSON.stringify(request), 'POST');
+				Spinner.hide();
+				console.log(data);
+				if (data.status == 'OK'){
+					$("#OTP_MODAL").modal('hide');
+					ShowToast.success("Two factor authentication successfull.");
+					handleRedirect(data.result.accessToken);
+				}else{
+					ShowToast.error("Verification code is incorrect");
+				}
+		    }, 1000);
+			
+		}
+		 
+		function open2FAPopup(){
+			makeOtpPopup();
+			$("#OTP_MODAL").modal('show');
+		}
+		
+		function makeOtpPopup(){
+			$("#OTP_POPUP").html("");
+			var sample = elements.popup.two_factor_authen(null);
+			$("#OTP_POPUP").append(sample);
+			$('button#VERIFY_OTP_BTN').css('cursor', 'pointer').click(handleVerifyOtp);
+		}
+		
+		
+		function handleForgotPassword(){
+			makeForgotPasswordPopup();
+			$("#FORGOT_PASSWORD_MODAL").modal('show');
+		}
+		
+		function makeForgotPasswordPopup(){
+			$("#FORGOT_PASSWORD_POPUP").html("");
+			var sample = elements.popup.forgot_password(null);
+			
+			$("#FORGOT_PASSWORD_POPUP").append(sample);
+			$('button#RESET_PASSWORD_BTN').css('cursor', 'pointer').click(handleResetPassword);
+		}
+		
+		function handleResetPassword(){
+			var request = {};
+			request.email = $("#EMAIL").val();
+			if (isEmpty(request.email)){
+				ShowToast.error("Email cannot be empty.");
+				return;
+			}
+			$("#FORGOT_PASSWORD_MODAL").modal('hide');
+			var params = sys.convertParam(request);
+			var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/mail-send-otp', params, 'get', true);
+			makeVerifyEmail(request.email);
+		}
+		
+		function makeVerifyEmail(email){
+			$("#OTP_POPUP").html("");
+			var sample = elements.popup.email_verify_opt({email: email});
+			$("#OTP_POPUP").append(sample);
+			$('button#EMAIL_VERIFY_OTP_BTN').css('cursor', 'pointer').click(function(){
+				Spinner.show();
+				setTimeout(()=>{
+					var request = {};
+					request.otpCode = $("#EMAIL_OTP_CODE").val();
+					request.email = email;
+					var params = sys.convertParam(request);
+					var data = sys.mariaDB.ajax('/api/auth/get-new-password',params);
+					if (data.status == "OK"){
+						ShowToast.success(data.messages);
+						setTimeout(function() {
+							Spinner.hide();
+							$("#EMAIL_OTP_MODAL").modal('hide');
+							window.location.href = "/login?redirect_uri=" + $("#REDIRECT_URI").val();
+						}, 3000);
+						
+					}else {
+						ShowToast.error(data.messages);
+						
+					}
+				}, 1000);
+				
+			});
+			$('a#RESEND_BTN').css('cursor', 'pointer').click(function(){
+				
+				var data = sys.mariaDB.ajax('/api/auth/mail-send-otp?email=' + email);
+				if (data.status == "OK"){
+					ShowToast.success("Send success");
+				} else {
+					ShowToast.error("Send failed");
+				}
+			});
+			
+			$("#EMAIL_OTP_MODAL").modal('show');
+			
+		}
+		
+		function handleRedirect(accessToken){
+			let redirectUri = $("#REDIRECT_URI").val();
+			window.location.href = redirectUri + '?access_token=' + accessToken;
+		}
+		
+		function handleActiveAccount(){
+			$("#OTP_POPUP").html("");
+			var sample = elements.popup.active_account();
+			$("#OTP_POPUP").append(sample);
+			
+			$('button#EMAIL_VERIFY_OTP_BTN').css('cursor', 'pointer').click(function(){
+				var request = {};
+				request.otpCode = $("#EMAIL_OTP_CODE").val();
+				request.username = $("#USERNAME").val();
+				request.password = $("#PASSWORD").val();
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/enable-account', JSON.stringify(request), 'POST');
+				if (data.status == "OK"){
+					$("#EMAIL_OTP_MODAL").modal('hide');
+					let result = data.result;
+					handleRedirect(result.accessToken);
+				}else {
+					ShowToast.error("The verification code is not correct");
+				}
+			});
+			
+			$('a#RESEND_BTN').css('cursor', 'pointer').click(function(){
+				var request = initParam();
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/login', JSON.stringify(request), 'POST');
+				if (data.status != "NG"){
+					ShowToast.success("Resend otp code successful");
+				} else {
+					ShowToast.error("Resend otp code failure");
+				}
+			});
+			
+			$("#EMAIL_OTP_MODAL").modal('show');
+			
+		}
+		
+	</script>
+
+</body>
+</html>

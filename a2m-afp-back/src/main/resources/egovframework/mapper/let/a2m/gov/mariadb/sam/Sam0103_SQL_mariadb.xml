@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sam0103DAO">
+	<select id="getById" resultMap="sam0103Rm" parameterType="Long">
+		select
+		* from TSST_COMMENT where ID = #{id}
+	</select>
+
+	<insert id="insert"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0103CommentModel">
+		insert into TSST_COMMENT
+		(
+		POST_ID, CONTENT, CREATED_DATE,
+		CREATED_BY, COMMENT_ID
+		)
+		values(#{postId}, #{content},
+		CURRENT_TIMESTAMP, #{createdBy}, #{commentParent.id})
+	</insert>
+
+	<update id="update"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0103CommentModel">
+		update TSST_COMMENT
+		<set>
+			CONTENT = #{content}
+		</set>
+		WHERE ID = #{id}
+	</update>
+
+	<select id="getListCommentByPostId" parameterType="Long"
+		resultMap="sam0103Rm">
+		select T1.* 
+<!-- 		T2.USER_ID  -->
+		from TSST_COMMENT T1
+<!-- 		join TSST_USER -->
+<!-- 		T2 on T1.CREATED_BY = T2.USER_UID -->
+		where T1.POST_ID = #{id}
+	</select>
+
+	<select id="getListCommentChild" parameterType="Long"
+		resultMap="sam0103Rm">
+		select T1.* 
+<!-- 		T2.USER_ID  -->
+		from TSST_COMMENT T1
+<!-- 		join TSST_USER -->
+<!-- 		T2 on T1.CREATED_BY = T2.USER_UID -->
+		where T1.COMMENT_ID = #{id}
+	</select>
+
+	<resultMap
+		type="egovframework.com.a2m.egov.model.sam.Sam0103CommentModel"
+		id="sam0103Rm">
+		<id property="id" column="ID" />
+		<result property="postId" column="POST_ID" />
+		<result property="content" column="CONTENT" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="createdBy" column="CREATED_BY" />
+	</resultMap>
+
+	<resultMap
+		type="egovframework.com.a2m.egov.model.sam.Sam0103Model"
+		id="sam0103QuestionRm">
+		<id property="id" column="ID" />
+		<result property="category" column="CATEGORY" />
+		<result property="topic" column="TOPIC" />
+		<result property="title" column="TITLE" />
+		<result property="content" column="CONTENT" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="createdByNm" column="CREATED_BY_NM" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+	</resultMap>
+
+
+	<select id="getQuestionById" resultMap="sam0103QuestionRm2"
+		parameterType="Long">
+		select
+		* from TSST_COMMUNITY where ID = #{id}
+	</select>
+
+	<insert id="insertQuestion"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0103Model">
+		insert into TSST_COMMUNITY
+		(
+		CATEGORY, TOPIC, TITLE,
+		CONTENT, CREATED_BY, CREATED_DATE
+		)
+		values(#{category}, #{topic},
+		#{title}, #{content}, #{createdBy}, CURRENT_TIMESTAMP)
+	</insert>
+
+	<update id="updateQuestion"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0103Model">
+		update TSST_COMMUNITY
+		<set>
+			CATEGORY = #{category},
+			TOPIC = #{topic},
+			TITLE = #{title},
+			CONTENT
+			= #{content},
+			UPDATED_BY = #{updatedBy},
+			UPDATED_DATE =
+			CURRENT_TIMESTAMP
+		</set>
+		WHERE ID = #{id}
+	</update>
+
+
+	<select id="getList" parameterType="map" resultMap="sam0103QuestionRm2">
+		select T1.* 
+<!-- 		T2.USER_ID as CREATED_BY_NM  -->
+		from TSST_COMMUNITY T1
+<!-- 		JOIN -->
+<!-- 		TSST_USER T2 on T1.CREATED_BY = T2.USER_UID -->
+		<where>
+			<if test="title != null">
+				AND lower(T1.TITLE) LIKE lower(concat('%', #{title},
+				'%'))
+			</if>
+			<if test="category != null">
+				AND T1.CATEGORY = #{category}
+			</if>
+			<if test="topic != null">
+				AND T1.TOPIC = #{topic}
+			</if>
+			<if test="date != null">
+				AND DATE_FORMAT(T1.CREATED_DATE, '%Y-%m-%d') =
+				DATE_FORMAT(#{date},
+				'%Y-%m-%d')
+			</if>
+		</where>
+		ORDER by T1.CREATED_DATE desc
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" parameterType="map" resultType="Long">
+		select count(*) from TSST_COMMUNITY
+		<where>
+			<if test="title != null">
+				AND lower(TITLE) LIKE lower(concat('%', #{title}, '%'))
+			</if>
+			<if test="category != null">
+				AND CATEGORY = #{category}
+			</if>
+			<if test="topic != null">
+				AND TOPIC = #{topic}
+			</if>
+			<if test="date != null">
+				AND DATE_FORMAT(CREATED_DATE, '%Y-%m-%d') = DATE_FORMAT(#{date},
+				'%Y-%m-%d')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getListByUrl" parameterType="map" resultMap="sam0103QuestionRm2">
+		select T1.* 
+<!-- 		T2.USER_ID as CREATED_BY_NM  -->
+		from TCCO_STD T0
+		JOIN TSST_COMMUNITY T1 ON T0.COMM_CD = T1.TOPIC and T0.VALUE_CONFIG = #{url}
+<!-- 		JOIN TSST_USER T2 on T1.CREATED_BY = T2.USER_UID -->
+		ORDER by T1.CREATED_DATE desc LIMIT 0, #{limit}
+	</select>
+	
+	<select id="countComment" resultType="Long">
+		select count(*) from TSST_COMMENT
+		where POST_ID = #{ID}
+	</select>
+	
+	<resultMap
+		type="egovframework.com.a2m.egov.model.sam.Sam0103Model"
+		id="sam0103QuestionRm2">
+		<id property="id" column="ID" />
+		<result property="category" column="CATEGORY" />
+		<result property="topic" column="TOPIC" />
+		<result property="title" column="TITLE" />
+		<result property="content" column="CONTENT" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="createdByNm" column="CREATED_BY_NM" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<association property="numberComment" javaType="Long" column="ID" select="countComment" />
+	</resultMap>
+	
+	<resultMap
+		type="egovframework.com.a2m.egov.model.sam.Sam0103CommentModel"
+		id="sam0103RmV2">
+		<id property="id" column="ID" />
+		<result property="postId" column="POST_ID" />
+		<result property="content" column="CONTENT" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="createdBy" column="CREATED_BY" />
+		<collection property="listCommentChild" javaType="List" column="ID" select="getListCommentChildV2"></collection>
+	</resultMap>
+	
+	<select id="getListCommentChildV2" parameterType="Long"
+		resultMap="sam0103RmV2">
+		select T1.* 
+<!-- 		T2.USER_ID  -->
+		from TSST_COMMENT T1
+<!-- 		join TSST_USER -->
+<!-- 		T2 on T1.CREATED_BY = T2.USER_UID -->
+		where T1.COMMENT_ID = #{id}
+	</select>
+	
+	<select id="selectComment" parameterType="Long" resultMap="sam0103RmV2">
+		select 
+		T1.CONTENT, T1.CREATED_DATE, T1.CREATED_BY, T1.POST_ID, T1.ID
+<!-- 		T2.CONTENT C_CONTENT, T2.CREATED_DATE C_CREATED_BY, T2.CREATED_BY C_CREATED_BY -->
+		from TSST_COMMENT T1
+<!-- 		left join TSST_COMMENT T2 ON T2.COMMENT_ID = T1.ID -->
+		where T1.POST_ID = #{id}
+	</select>
+</mapper>

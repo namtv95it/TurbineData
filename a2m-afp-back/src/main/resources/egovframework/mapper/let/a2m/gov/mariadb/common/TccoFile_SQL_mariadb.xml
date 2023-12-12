@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TccoFileDAO">
+	
+	<select id="findBySequence" parameterType="java.lang.String" resultType="map">
+		SELECT
+			*
+		FROM
+			TCCO_FILE
+		WHERE
+			ATCH_FLE_SEQ = #{fileSequence}
+	</select>
+
+	<select id="findBySequences" parameterType="java.util.List" resultType="map">
+		SELECT
+			*
+		FROM
+			TCCO_FILE
+		WHERE
+			ATCH_FLE_SEQ IN 
+			<foreach collection="list" item="fileSequence" index="idx" open="(" separator="," close=")">
+				#{fileSequence}
+			</foreach>
+	</select>
+
+	<insert id="insert" parameterType="map">
+		INSERT INTO TCCO_FILE (
+			ATCH_FLE_SEQ,
+			FLE_KEY,
+			FLE_TP,
+			FLE_PATH,
+			FLE_NM,
+			NEW_FLE_NM,
+			FLE_SZ,
+			CREATED_BY,
+			CREATED_DATE
+		) VALUES (
+			#{ATCH_FLE_SEQ},
+			#{FLE_KEY},
+			#{FLE_TP},
+			#{FLE_PATH},
+			#{FLE_NM},
+			#{NEW_FLE_NM},
+			#{FLE_SZ},
+			#{CREATED_BY},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<insert id="insertTccoFile" parameterType="egovframework.com.a2m.egov.model.TccoFile">
+		INSERT INTO TCCO_FILE
+		(
+			ATCH_FLE_SEQ,
+			FLE_KEY,
+			FLE_TP,
+			FLE_PATH,
+			FLE_NM,
+			NEW_FLE_NM,
+			FLE_SZ,
+			CREATED_BY,
+			CREATED_DATE,
+			UPDATED_BY,
+			UPDATED_DATE
+		)
+		VALUES(
+			#{atchFleSeq},
+			#{fleKey},
+			#{fleTp},
+			#{flePath},
+			#{fleNm},
+			#{newFleNm},
+			#{fleSz},
+			#{createdBy},
+			#{createdDateStr},
+			#{updatedBy},
+			#{updatedDate}
+		)
+ 	</insert>
+
+	<update id="updateTccoFile" parameterType="egovframework.com.a2m.egov.model.TccoFile">
+		UPDATE TCCO_FILE
+		SET ATCH_FLE_SEQ = ATCH_FLE_SEQ
+		<if test="fleKey != null and fleKey != ''">
+			,FLE_KEY = #{fleKey}
+		</if>
+		<if test="fleTp != null and fleTp != ''">
+			,FLE_TP = #{fleTp}
+		</if>
+		<if test="flePath != null and flePath != ''">
+			,FLE_PATH = #{flePath}
+		</if>
+		<if test="fleNm != null and fleNm != ''">
+			,FLE_NM = #{fleNm}
+		</if>
+		<if test="newFleNm != null and newFleNm != ''">
+			,NEW_FLE_NM = #{newFleNm}
+		</if>
+		<if test="fleSz != null and fleSz != ''">
+			,FLE_SZ = #{fleSz}
+		</if>
+		<if test="createdBy != null and createdBy != ''">
+			,CREATED_BY = #{createdBy}
+		</if>
+		<if test="createdDate != null">
+			,CREATED_DATE = #{createdDate}
+		</if>
+		<if test="updatedBy != null and updatedBy != ''">
+			,UPDATED_BY = #{updatedBy}
+		</if>
+		<if test="updatedDate != null">
+			,UPDATED_DATE = #{updatedDate}
+		</if>
+
+		WHERE ATCH_FLE_SEQ = #{atchFleSeq}
+	</update>
+	
+	<select id="getAllTccoFile" parameterType="map"
+		resultType="egovframework.com.a2m.egov.model.TccoFile">
+		SELECT
+		ATCH_FLE_SEQ as atchFleSeq,
+		FLE_KEY as fleKey,
+		FLE_TP as fleTp,
+		FLE_PATH as flePath,
+		FLE_NM as fleNm,
+		NEW_FLE_NM as newFleNm,
+		FLE_SZ as fleSz,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate,
+		UPDATED_BY as updatedBy,
+		UPDATED_DATE as updatedDate
+		FROM TCCO_FILE
+	</select>
+	
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sys0401DAO">
+
+    <select id="searchCommCd" resultType="egovframework.com.a2m.egov.model.TccoSTD" parameterType="map">
+        SELECT * FROM TCCO_STD WHERE
+        (
+        COMM_NM LIKE CONCAT('%', #{commName}, '%')
+        OR
+        COMM_NM_EN LIKE CONCAT('%', #{commName}, '%')
+        OR
+        COMM_NM_VI LIKE CONCAT('%', #{commName}, '%')
+        )
+        <if test="status != 'null'">
+            AND
+            USE_YN = #{status}
+        </if>
+
+    </select>
+
+    <insert id="addCommCd" parameterType="egovframework.com.a2m.egov.model.TccoSTD">
+        INSERT INTO TCCO_STD
+        (
+        COMM_CD,
+        COMM_NM,
+        COMM_NM_EN,
+        VALUE_CONFIG,
+        CREATED_BY,
+        CREATED_DATE,
+        LEV,
+        UP_COMM_CD,
+        USE_YN
+        )
+        VALUES
+        (
+        #{commCd},
+        #{commNm},
+        #{commNmEn},
+        #{valueConfig},
+        #{createdBy},
+        NOW(),
+        #{lev},
+        #{upCommCd},
+        #{useYn}
+        );
+    </insert>
+
+    <update id="updateCommCd" parameterType="egovframework.com.a2m.egov.model.TccoSTD">
+        UPDATE TCCO_STD
+        SET
+        COMM_NM = #{commNm},
+        COMM_NM_EN = #{commNmEn},
+        VALUE_CONFIG = #{valueConfig},
+        DESCRIPTION = #{description},
+        UPDATED_BY = #{updatedBy},
+        UPDATED_DATE = NOW(),
+        USE_YN = #{useYn}
+        WHERE COMM_CD = #{commCd};
+    </update>
+
+    <delete id="deleteCommCd" parameterType="String">
+        DELETE FROM TCCO_STD WHERE COMM_CD LIKE CONCAT(#{commCd},'%')
+    </delete>
+
+    <select id="getMaxCommCd" parameterType="String" resultType="String">
+        SELECT MAX(ts.COMM_CD) FROM TCCO_STD ts
+        <if test="commCd != null and commCd != ''">
+            WHERE ts.UP_COMM_CD = #{commCd}
+        </if>
+    </select>
+
+    <select id="getNumChildrenOfCommCd" parameterType="String" resultType="Integer">
+        SELECT COUNT(*) FROM TCCO_STD WHERE UP_COMM_CD = #{upCommCd}
+    </select>
+
+    <select id="getCommCdByID" parameterType="String" resultType="egovframework.com.a2m.egov.model.TccoSTD">
+        SELECT * FROM TCCO_STD WHERE COMM_CD = #{commCd}
+    </select>
+
+</mapper>

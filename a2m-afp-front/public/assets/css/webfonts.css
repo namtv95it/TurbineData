@@ -1,0 +1,267 @@
+@charset "UTF-8";
+@import url('../css/xeicon/xeicon.css');
+@import url('../css/line-awesome.min.css');
+
+/*
+ * NotoSansKR (한글)
+ */
+ @font-face {
+    font-family: '';
+    src: url('../css/font/NotoSansKR/subset-NotoSansKR-Light-Alphabetic.woff2') format('woff2'),
+        url('../css/font/NotoSansKR/subset-NotoSansKR-Light-Alphabetic.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+    font-family: '';
+    src: url('../css/font/NotoSansKR/subset-NotoSansKR-Bold-Alphabetic.woff2') format('woff2'),
+        url('../css/font/NotoSansKR/subset-NotoSansKR-Bold-Alphabetic.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+    font-family: '';
+    src: url('../css/font/NotoSansKR/subset-NotoSansKR-Black-Alphabetic.woff2') format('woff2'),
+        url('../css/font/NotoSansKR/subset-NotoSansKR-Black-Alphabetic.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+    font-family: '';
+    src: url('../css/font/NotoSansKR/subset-NotoSansKR-Thin-Alphabetic.woff2') format('woff2'),
+        url('../css/font/NotoSansKR/subset-NotoSansKR-Thin-Alphabetic.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+    font-family: '';
+    src: url('../css/font/NotoSansKR/subset-NotoSansKR-Regular-Alphabetic.woff2') format('woff2'),
+        url('../css/font/NotoSansKR/subset-NotoSansKR-Regular-Alphabetic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+    font-family: '';
+    src: url('subset-NotoSansKR-Medium-Alphabetic.woff2') format('woff2'),
+        url('subset-NotoSansKR-Medium-Alphabetic.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+AC00-D7A3;
+}
+
+/*
+ * Poppins (영문, 대소문자, 숫자)
+ */
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Black.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Black.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-BlackItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-BlackItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Bold.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Bold.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-BoldItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-BoldItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-ExtraBold.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-ExtraBold.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-ExtraBoldItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-ExtraBoldItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-ExtraLight.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-ExtraLight.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-ExtraLightItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-ExtraLightItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Italic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Italic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Light.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Light.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-LightItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-LightItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-MediumItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-MediumItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Medium.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Medium.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Regular.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Regular.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-SemiBold.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-SemiBold.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-SemiBoldItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-SemiBoldItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-Thin.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-Thin.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../css/font/Poppins/Poppins-ThinItalic.woff2') format('woff2'),
+        url('../css/font/Poppins/Poppins-ThinItalic.woff') format('woff'),
+        url('../css/font/Poppins/Poppins-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: fallback;
+    unicode-range: U+0041-005A, U+0061-007A, U+0030-0039;
+}

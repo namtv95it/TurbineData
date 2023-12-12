@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userDAO">
+
+	<!-- Get user information by userId -->
+	<select id="getUserByUserId" parameterType="String"
+		resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT T1.USER_UID as userUid,
+		T1.USER_ID as userId,
+		T1.CREATED_BY as createdBy,
+		T1.CREATED_DATE as createdDate,
+		T1.PWD as pwd,
+		T1.UPDATED_DATE as updatedDate,
+		T1.UPDATED_BY as updatedBy,
+		T1.PWD_EXPR as pwdExpr,
+		T1.STATUS as status,
+		T1.USER_INFO_ID as userInfoId,
+		T1.AUTH_PROVIDER as authProvider,
+		T2.EMAIL as email,
+		T2.CELL_PHONE as cellPhone,
+		T2.DOB as dob,
+		T2.FULL_NAME as fullName,
+		T2.ADDRESS as address,
+		T2.GENDER as gender,
+		T2.IMG_PATH as imgPath,
+		T2.2FA_ENABLE as twoFAEnable,
+		T2.2FA_KEY as twoFAKey,
+		T2.EMAIL_VERIFY_KEY as emailVerifyKey
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+		WHERE
+		T1.USER_ID = #{userId}
+
+	</select>
+
+	<!-- Get user information by userUid -->
+	<select id="getUserByUserUid" parameterType="String"
+		resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT T1.USER_UID as userUid,
+		T1.USER_ID as userId,
+		T1.CREATED_BY as createdBy,
+		T1.CREATED_DATE as createdDate,
+		T1.PWD as pwd,
+		T1.UPDATED_DATE as updatedDate,
+		T1.UPDATED_BY as updatedBy,
+		T1.PWD_EXPR as pwdExpr,
+		T1.STATUS as status,
+		T1.USER_INFO_ID as userInfoId,
+		T1.AUTH_PROVIDER as authProvider,
+		T2.EMAIL as email,
+		T2.CELL_PHONE as cellPhone,
+		T2.DOB as dob,
+		T2.FULL_NAME as fullName,
+		T2.ADDRESS as address,
+		T2.GENDER as gender,
+		T2.IMG_PATH as imgPath,
+		T2.2FA_ENABLE as twoFAEnable,
+		T2.2FA_KEY as twoFAKey,
+		T2.EMAIL_VERIFY_KEY as emailVerifyKey,
+		T2.ORGANIZATION as organization,
+		T2.POSITION as position
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+		WHERE
+		T1.USER_UID = #{userUid}
+
+	</select>
+
+	<!-- Get user information by email -->
+	<select id="getUserByEmail" parameterType="String"
+		resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT T1.USER_UID as userUid,
+		T1.USER_ID as userId,
+		T1.CREATED_BY as createdBy,
+		T1.CREATED_DATE as createdDate,
+		T1.PWD as pwd,
+		T1.UPDATED_DATE as updatedDate,
+		T1.UPDATED_BY as updatedBy,
+		T1.PWD_EXPR as pwdExpr,
+		T1.STATUS as status,
+		T1.USER_INFO_ID as userInfoId,
+		T1.AUTH_PROVIDER as authProvider,
+		T2.EMAIL as email,
+		T2.CELL_PHONE as cellPhone,
+		T2.DOB as dob,
+		T2.FULL_NAME as fullName,
+		T2.ADDRESS as address,
+		T2.GENDER as gender,
+		T2.IMG_PATH as imgPath,
+		T2.2FA_ENABLE as twoFAEnable,
+		T2.2FA_KEY as twoFAKey,
+		T2.EMAIL_VERIFY_KEY as emailVerifyKey
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+		WHERE
+		T2.EMAIL = #{email}
+
+	</select>
+
+	<!-- Get all user information -->
+	<select id="getAllUsers" parameterType="java.util.Map"
+		resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT T1.USER_UID as userUid,
+		T1.USER_ID as userId,
+		T1.CREATED_BY as createdBy,
+		T1.CREATED_DATE as createdDate,
+		T1.PWD as pwd,
+		T1.UPDATED_DATE as updatedDate,
+		T1.UPDATED_BY as updatedBy,
+		T1.PWD_EXPR as pwdExpr,
+		T1.STATUS as status,
+		T1.USER_INFO_ID as userInfoId,
+		T1.AUTH_PROVIDER as authProvider,
+		T2.EMAIL as email,
+		T2.CELL_PHONE as cellPhone,
+		T2.DOB as dob,
+		T2.FULL_NAME as fullName,
+		T2.ADDRESS as address,
+		T2.GENDER as gender,
+		T2.IMG_PATH as imgPath,
+		T2.2FA_ENABLE as twoFAEnable,
+		T2.2FA_KEY as twoFAKey
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+
+	</select>
+
+	<insert id="insertTsstUser" parameterType="egovframework.a2m.egov.model.request.SignUpRequest" useGeneratedKeys="true" keyProperty="userUid">
+		INSERT INTO TSST_USER(
+		USER_UID,
+		USER_ID,
+		CREATED_BY,
+		CREATED_DATE,
+		PWD,
+		UPDATED_DATE,
+		PWD_EXPR,
+		STATUS,
+		USER_INFO_ID,
+		AUTH_PROVIDER
+		)
+		VALUES (
+		#{userUid},
+		#{userId},
+		#{createdBy},
+		#{createdDate},
+		#{hashPwd},
+		#{updatedDate},
+		#{pwdExpr},
+		#{status},
+		#{userInfoId},
+		#{authProvider}
+		)
+	</insert>
+
+	<select id="countUserByUserId" parameterType="String"
+		resultType="Integer">
+		SELECT COUNT(*)
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+		WHERE T1.USER_ID = #{userId}
+	</select>
+
+	<select id="countUserByEmail" parameterType="String"
+		resultType="Integer">
+		SELECT COUNT(*)
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+		WHERE T2.EMAIL = #{email}
+	</select>
+
+
+	<delete id="deleteTsstUser" parameterType="String">
+		DELETE FROM TSST_USER
+		WHERE USER_UID = #{userUid}
+	</delete>
+	
+	<insert id="insertUser" parameterType="egovframework.a2m.egov.model.request.UserRequest" useGeneratedKeys="true" keyProperty="userUid">
+		INSERT INTO TSST_USER
+		(
+					USER_UID,
+					USER_ID,
+					PWD,
+					USER_INFO_ID,
+					USER_TYPE,
+					STATUS,
+					CREATED_BY,
+					CREATED_DATE,
+					PWD_EXPR,
+					AUTH_PROVIDER
+		)
+		VALUES(
+					#{userUid},
+					#{userId},
+					#{password},
+					#{userInfoId},
+					#{userType},
+					#{status},
+					#{createdBy},
+					SYSDATE(),
+					#{pwdExpr},
+					#{authProvider}
+			)
+ 	</insert>
+
+	<update id="updateUser"
+		parameterType="egovframework.a2m.egov.model.request.UserRequest">
+		UPDATE TSST_USER
+		SET USER_UID = USER_UID
+		<if test="password != null and password != ''">
+			,PWD = #{password}
+		</if>
+		<if test="userType != null and userType != ''">
+			,USER_TYPE = #{userType}
+		</if>
+		<if test="status != null and status != ''">
+			,STATUS = #{status}
+		</if>
+		<if test="updatedBy != null and updatedBy != ''">
+			,UPDATED_BY = #{updatedBy}
+		</if>
+		,UPDATED_DATE = SYSDATE()
+		<if test="pwdExpr != null">
+			,PWD_EXPR = #{pwdExpr}
+		</if>
+		WHERE USER_UID = #{userUid}
+	</update>
+
+	<update id="changePassword"
+		parameterType="egovframework.a2m.egov.model.request.ChangePasswordRequest">
+		UPDATE TSST_USER
+		SET
+			PWD = #{hashPwd}
+			<if test="updatedBy != null and updatedBy != ''">
+				,UPDATED_BY = #{updatedBy}
+			</if>
+			,UPDATED_DATE = SYSDATE()
+			<if test="pwdExpr != null">
+				,PWD_EXPR = #{pwdExpr}
+			</if>
+		WHERE USER_UID = #{userUid}
+	</update>
+
+	<select id="searchUser" parameterType="map" resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT
+		A.USER_INFO_ID as userInfoId,
+		A.FULL_NAME as fullName,
+		A.IMG_PATH as imgPath,
+		A.DOB as dob,
+		A.EMAIL as email,
+		A.CELL_PHONE as cellPhone,
+		A.ADDRESS as address,
+		A.GENDER as gender,
+		A.ORGANIZATION as organization,
+
+		U.STATUS as status,
+		U.USER_UID as userUid,
+		U.USER_ID as userId
+
+		FROM TSST_USER_INFO A
+		LEFT JOIN TSST_USER U ON A.USER_INFO_ID = U.USER_INFO_ID
+		<where>
+			<if test="fullName != null">
+				AND LOWER(A.FULL_NAME) LIKE LOWER(CONCAT('%',
+				#{fullName}, '%'))
+			</if>
+			<if test="status != null">
+				AND U.STATUS = #{status}
+			</if>
+		</where>
+		
+		<if test="columnName == null">
+			ORDER BY USER_UID DESC
+		</if>
+		
+		<if test="columnName != null and sortType != null">
+			ORDER BY ${columnName} ${sortType}
+		</if>
+		
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+	
+	<select id="count" parameterType="map" resultType="Integer">
+		SELECT
+		COUNT(U.USER_UID)
+		FROM TSST_USER_INFO A
+		LEFT JOIN TSST_USER U ON A.USER_INFO_ID =
+		U.USER_INFO_ID
+		<where>
+			<if test="userInfoId != null">
+				<trim prefix="AND">
+					A.USER_INFO_ID = #{userInfoId}
+				</trim>
+			</if>
+			<if test="fullName != null and fullName != ''">
+				<trim prefix="AND">
+					LOWER(A.FULL_NAME) LIKE LOWER(CONCAT('%', #{fullName}, '%'))
+				</trim>
+			</if>
+			<if test="status != null and status != ''">
+				<trim prefix="AND">
+					U.STATUS = #{status}
+				</trim>
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateStatusByEmail" parameterType="map">
+		UPDATE TSST_USER T1
+		SET
+			<if test="status != null and status != ''">
+				T1.STATUS = #{status}
+			</if>
+			,T1.UPDATED_DATE = SYSDATE()
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER_INFO A1 WHERE A1.EMAIL = #{email})
+	</update>
+	
+	<update id="update2FAKey" parameterType="map">
+		UPDATE TSST_USER_INFO T1
+		SET
+			T1.2FA_KEY = #{secretKey}
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER A1 WHERE A1.USER_UID = #{userUid})
+	</update>
+	
+	<update id="update2FAKeyStatus" parameterType="map">
+		UPDATE TSST_USER_INFO T1
+		SET
+			T1.2FA_ENABLE = #{status}
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER A1 WHERE A1.USER_UID = #{userUid})
+	</update>
+	
+	<update id="updateEmailVerifyKey" parameterType="map">
+		UPDATE TSST_USER_INFO T1
+		SET
+			T1.EMAIL_VERIFY_KEY = #{emailVerifyKey}
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER A1 WHERE A1.USER_UID = #{userUid})
+	</update>
+	
+	<update id="updateEmail" parameterType="map">
+		UPDATE TSST_USER_INFO T1
+		SET
+			T1.EMAIL = #{email}
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER A1 WHERE A1.USER_UID = #{userUid})
+	</update>
+	
+	<update id="updateAvatarImgPath" parameterType="map">
+		UPDATE TSST_USER_INFO T1
+		SET
+			T1.IMG_PATH = #{imgPath}
+		WHERE T1.USER_INFO_ID = (SELECT A1.USER_INFO_ID FROM TSST_USER A1 WHERE A1.USER_UID = #{userUid})
+	</update>
+	
+	<select id="getListUserInfoByUserUid" parameterType="map"
+		resultType="egovframework.a2m.egov.model.response.UserResponse">
+		SELECT T1.USER_UID as userUid,
+		T1.USER_ID as userId,
+		T1.CREATED_BY as createdBy,
+		T1.CREATED_DATE as createdDate,
+		T1.PWD as pwd,
+		T1.UPDATED_DATE as updatedDate,
+		T1.UPDATED_BY as updatedBy,
+		T1.PWD_EXPR as pwdExpr,
+		T1.STATUS as status,
+		T1.USER_INFO_ID as userInfoId,
+		T1.AUTH_PROVIDER as authProvider,
+		T2.EMAIL as email,
+		T2.CELL_PHONE as cellPhone,
+		T2.DOB as dob,
+		T2.FULL_NAME as fullName,
+		T2.ADDRESS as address,
+		T2.GENDER as gender,
+		T2.IMG_PATH as imgPath,
+		T2.2FA_ENABLE as twoFAEnable,
+		T2.2FA_KEY as twoFAKey,
+		T2.EMAIL_VERIFY_KEY as emailVerifyKey
+		FROM TSST_USER T1
+		LEFT JOIN TSST_USER_INFO T2 ON T1.USER_INFO_ID = T2.USER_INFO_ID
+<!-- 		WHERE -->
+<!-- 		T1.USER_UID = #{userUid} -->
+		<where>
+		    <foreach item="item" index="index" collection="userUids"
+		        open="T1.USER_UID in (" separator="," close=")">
+		          #{item}
+		    </foreach>
+		  </where>
+
+	</select>
+
+</mapper>

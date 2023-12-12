@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="threadsDao">
+
+	<select id="getList" parameterType="egovframework.com.a2m.egov.model.afp.threads.ThreadsSearch" resultMap="threadsModelRm">
+		SELECT
+		    c.ID as ID,
+			c.CONTENT as CONTENT,
+			c.POST_ID as POST_ID,
+			p.AFP_MENU_ID as AFP_MENU_ID,
+			m.TSST_MENU_ID as TSST_MENU_ID,
+			'' as description,
+			'09-03' AS postType,
+			c.CREATED_DATE AS CREATED_DATE,
+			c.CREATED_BY as CREATED_BY,
+			COUNT(DISTINCT l.ID) as NUMBER_LIKE,
+			CASE
+				WHEN b.COMMENT_ID IS NOT NULL THEN 'Y'
+				ELSE 'N'
+			END AS IS_BOOKMARK,
+			CASE
+				WHEN l2.COMMENT_ID IS NOT NULL THEN 'Y'
+				ELSE 'N'
+			END AS IS_LIKE
+		FROM AFP_COMMENT c
+		 	LEFT JOIN AFP_LIKE l ON c.ID = l.COMMENT_ID
+			LEFT JOIN AFP_LIKE l2 ON c.ID = l2.COMMENT_ID AND l2.USER_UID = #{userUid}
+			JOIN AFP_POST p ON c.POST_ID = p.ID
+		    JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		<choose>
+			<when test="typeSearch == 'T_02'">
+				AND m.TSST_MENU_ID = "MNU_08_01"
+			</when>
+			<when test="typeSearch == 'T_03'">
+				AND m.TSST_MENU_ID = "MNU_08_02"
+			</when>
+			<when test="typeSearch == 'T_04'">
+				AND m.TSST_MENU_ID = "MNU_08_03"
+			</when>
+			<when test="typeSearch == 'T_05'">
+				AND m.TSST_MENU_ID = "MNU_08_04"
+			</when>
+			<when test="typeSearch == 'T_06'">
+				JOIN AFP_BOOKMARK b ON c.ID = b.COMMENT_ID AND b.USER_UID = #{userUid}
+			</when>
+		</choose>
+		<choose>
+			<when test="typeSearch != 'T_06'">
+				LEFT JOIN AFP_BOOKMARK b ON c.ID = b.COMMENT_ID AND b.USER_UID = #{userUid}
+			</when>
+		</choose>
+		<where>
+			p.IS_DELETED = '0'
+			AND c.IS_DELETED = '0'
+			AND m.IS_DELETED = '0'
+			<if test="keySearch != null">
+				AND lower(c.CONTENT) LIKE lower(concat('%', #{keySearch}, '%'))
+			</if>
+		</where>
+		GROUP BY c.ID
+		ORDER BY c.CREATED_DATE DESC
+	</select>
+
+	<select id="getAfpMenus" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuResponse" parameterType="map">
+		 SELECT
+		    ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy
+		FROM AFP_MENU
+		WHERE
+		    1 = 1
+			<if test="afpMenuName != null and afpMenuName != ''">
+					AND T1.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR T1.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%')
+			</if>
+			<if test="tsstMenuId != null and tsstMenuId != ''">
+					AND TSST_MENU_ID = #{tsstMenuId}
+			</if>
+			AND IS_DELETED = #{isDeleted}
+	</select>
+
+	<resultMap
+		type="egovframework.com.a2m.egov.model.afp.threads.ThreadsModel"
+		id="threadsModelRm">
+		<id property="id" column="ID" />
+		<result property="postId" column="POST_ID" />
+		<result property="title" column="CONTENT" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="menuId" column="AFP_MENU_ID" />
+		<result property="commentId" column="COMMENT_ID" />
+		<result property="tsstMenuId" column="TSST_MENU_ID" />
+		<result property="likeNumber" column="NUMBER_LIKE" />
+		<result property="isBookmark" column="IS_BOOKMARK" />
+		<result property="isLike" column="IS_LIKE" />
+	</resultMap>
+
+</mapper>

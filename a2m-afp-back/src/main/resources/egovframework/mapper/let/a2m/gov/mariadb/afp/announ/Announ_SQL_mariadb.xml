@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AnnounDAO">
+
+	<resultMap type="egovframework.com.a2m.egov.model.afp.ann.AnnounModel" id="announModelRm">
+		<id property="id" column="ID" />
+		<result property="title" column="TITLE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="viewNumber" column="VIEW_NUMBER" />
+		<result property="likeNumber" column="LIKE_NUMBER" />
+		<result property="commentNumber" column="COMMENT_NUMBER" />
+		<result property="isBookmark" column="IS_BOOKMARK" />
+		<result property="isLike" column="IS_LIKE" />
+	</resultMap>
+
+	<select id="search" parameterType="egovframework.com.a2m.egov.model.afp.ann.AnnounSearch" resultMap="announModelRm">
+		SELECT p.*,
+		COUNT(DISTINCT l.ID) AS LIKE_NUMBER, 
+		COUNT(DISTINCT c.ID) AS COMMENT_NUMBER,
+		CASE
+			WHEN b.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_BOOKMARK,
+		CASE
+			WHEN l2.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_LIKE
+		
+		from AFP_POST p 
+		
+		LEFT JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+		
+		LEFT JOIN AFP_LIKE l ON p.ID = l.POST_ID
+		
+		LEFT JOIN AFP_LIKE l2 ON p.ID = l2.POST_ID AND l2.USER_UID = #{userUid}
+
+		LEFT JOIN AFP_COMMENT c ON p.ID = c.POST_ID AND c.IS_DELETED = '0'
+		<where>
+			p.IS_DELETED = '0'
+			<if test="keySearch != null">
+				AND lower(p.TITLE) LIKE lower(concat('%', #{keySearch}, '%'))
+			</if>
+			AND p.COMM_CD_POST_TYPE_ID = "09-04"
+		</where>
+		
+		group by p.id
+		ORDER BY p.CREATED_DATE DESC
+	</select>
+	
+	<select id="getPostById" parameterType="Long" resultMap="announModelRm">
+		SELECT p.* 
+		from AFP_POST p
+		WHERE p.ID = #{id} AND p.IS_DELETED = '0'
+	</select>
+	
+		<select id="getById" parameterType="map" resultMap="announModelRm">
+			SELECT p.*,
+				COUNT(DISTINCT l.ID) AS LIKE_NUMBER, 
+				COUNT(DISTINCT c.ID) AS COMMENT_NUMBER,
+				CASE
+					WHEN b.POST_ID IS NOT NULL THEN 'Y'
+					ELSE 'N'
+				END AS IS_BOOKMARK,
+				CASE
+					WHEN l2.POST_ID IS NOT NULL THEN 'Y'
+					ELSE 'N'
+				END AS IS_LIKE
+		
+			from AFP_POST p 
+			
+			LEFT JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+			
+			LEFT JOIN AFP_LIKE l ON p.ID = l.POST_ID
+			
+			LEFT JOIN AFP_LIKE l2 ON p.ID = l2.POST_ID AND l2.USER_UID = #{userUid}
+	
+			LEFT JOIN AFP_COMMENT c ON p.ID = c.POST_ID AND c.IS_DELETED = '0'
+	
+			WHERE p.ID = #{postId} AND p.IS_DELETED = '0'
+	</select>
+	
+	<insert id="insert" parameterType="egovframework.com.a2m.egov.model.afp.ann.AnnounModel" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO AFP_POST(CREATED_BY, CREATED_DATE, DESCRIPTION, TITLE, VIEW_NUMBER, COMM_CD_POST_TYPE_ID, IS_DELETED)
+		VALUES(#{createdBy}, CURRENT_TIMESTAMP, #{description}, #{title}, 0, '09-04', 0)
+	</insert>
+	
+	<update id="update" parameterType="egovframework.com.a2m.egov.model.afp.ann.AnnounModel">
+		UPDATE AFP_POST
+		<set>
+	      <if test="title != null">TITLE=#{title},</if>
+	      <if test="description != null">DESCRIPTION=#{description},</if>
+	      <if test='crudType != null and crudType == "D"'>IS_DELETED = 1,</if>
+	      UPDATED_BY = #{updatedBy},
+	      UPDATED_DATE = CURRENT_TIMESTAMP
+	    </set>
+	    WHERE ID = #{id}
+	</update>
+	
+	<select id="getAnnounNotiInfo" parameterType="String" resultType="Long">
+		SELECT p.LAST_POST_ID 
+		from AFP_ANNOUN_NOTI p
+		WHERE p.USER_UID = #{userUid}
+	</select>
+	
+	<select id="getLastAnnounId" resultType="Long">
+		SELECT MAX(p.ID) FROM AFP_POST p
+		WHERE p.COMM_CD_POST_TYPE_ID = "09-04"
+	</select>
+	
+	<insert id="remakeAnnounNoti" parameterType="Map">
+		BEGIN NOT ATOMIC
+			DELETE FROM AFP_ANNOUN_NOTI WHERE USER_UID = #{userUid};
+			
+			INSERT INTO AFP_ANNOUN_NOTI(USER_UID, LAST_POST_ID)
+			VALUES(#{userUid}, #{lastAnnounId});
+		END;
+	</insert>
+</mapper>

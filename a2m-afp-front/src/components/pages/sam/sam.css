@@ -1,0 +1,55 @@
+.sam-cursor {
+  cursor: pointer;
+}
+
+.sam-hashtag {
+  border: 1px solid;
+  padding: 5px;
+  color: #89b449;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.sam-hashtag:hover {
+  color: white;
+  background-color: #89b449;
+}
+
+.innerHtml img {
+  max-width: 100%;
+}
+
+.profile-name-tag {
+  color: #89b449;
+}
+
+.sam-link {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2f7fe7;
+  text-decoration: underline;
+}
+
+.sam-bg-question {
+  background-color: #89b449;
+  color: #fff;
+}
+
+.sam-width-dialog {
+  width: 80vw;
+}
+
+.block.col-12 .info .info__tos,
+.block.col-12 .info .main .base-url,
+.block.col-12 .info .main a,
+.block.col-12 .info .info__contact,
+.block.col-12 .info .info__license {
+  display: none;
+}
+
+
+@media only screen and (min-width: 992px) {
+  .sam-width-dialog {
+    width: 50vw;
+  }
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sys0501DAO">
+
+    <select id="searchLib" parameterType="map" resultMap="listLib">
+        SELECT
+        FL.ID,
+        FL.NAME,
+        FL.ENABLE,
+        FD.ID AS dependId,
+        FD.NAME AS dependName,
+        FD.ENABLE AS dependEnable
+        FROM
+        FRAME_LIBRARY FL LEFT JOIN FRAME_DEPENDENCY FD ON FL.ID = FD.LIBRARY_ID
+        WHERE FL.NAME LIKE CONCAT('%', #{libName}, '%')
+        <if test="status != 'null'">
+            AND ENABLE = #{status}
+        </if>
+
+    </select>
+
+    <select id="listOptionLib" resultType="map">
+        SELECT * FROM FRAME_DEPENDENCY
+    </select>
+
+    <update id="saveManuals" parameterType="map">
+        <if test="type == 1">
+            UPDATE FRAME_PROJECT_MANUALS SET MANUALS = #{manuals} WHERE PROJECT_ID = #{id};
+        </if>
+        <if test="type == 0">
+            UPDATE FRAME_DEPENDENCY SET MANUALS = #{manuals} WHERE ID = #{id};
+        </if>
+
+    </update>
+
+    <update id="changeStatus" parameterType="map">
+        <if test="type == 0">
+            UPDATE FRAME_LIBRARY SET ENABLE = #{enable} WHERE  ID = #{id};
+        </if>
+        <if test="type == 1">
+            UPDATE FRAME_DEPENDENCY SET ENABLE = #{enable} WHERE  ID = #{id};
+        </if>
+    </update>
+
+    <select id="getManualsByID" parameterType="map" resultType="map">
+        <if test="type == 1">
+            SELECT MANUALS FROM FRAME_PROJECT_MANUALS WHERE PROJECT_ID = #{id};
+        </if>
+        <if test="type == 0">
+            SELECT MANUALS FROM FRAME_DEPENDENCY WHERE ID = #{id};
+        </if>
+    </select>
+
+    <resultMap id="listLib" type="map">
+        <id property="libId" column="ID"/>
+        <result property="enable" javaType="boolean" column="ENABLE"/>
+        <result property="name" column="NAME"/>
+        <collection property="children" ofType="map" javaType="ArrayList">
+            <id property="dependId" column="dependId"/>
+            <result property="name" column="dependName"/>
+            <result property="enable" column="dependEnable"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getCategories" resultMap="categoryResultMap">
+        SELECT C.ID as id,
+        C.name as name,
+        C.ENABLED as enabled,
+        T1.ID as projectId,
+        T1.VERSION as version,
+        T1.NAME as projectName,
+        T1.NAME_KR as nameKr
+        FROM FRAME_CATEGORY C
+        LEFT JOIN FRAME_PROJECT T1 ON T1.CATEGORY_ID = C.ID
+        LEFT JOIN FRAME_PROJECT_TAGS T2 ON T1.ID = T2.PROJECT_ID
+    </select>
+
+    <resultMap id="categoryResultMap" type="map">
+        <id property="categoryId" column="id"/>
+        <result property="enabled" column="enabled" />
+        <result property="name" column="name" />
+        <collection property="children" ofType="map" javaType="ArrayList">
+            <id property="projectId" column="projectId"/>
+            <result property="enabled" column="projectEnable"/>
+            <result property="name" column="projectName"/>
+            <result property="version" column="version" />
+            <result property="nameKr" column="nameKr" />
+        </collection>
+    </resultMap>
+</mapper>

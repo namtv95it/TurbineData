@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ComPostDAO">
+
+	<resultMap type="egovframework.com.a2m.egov.model.afp.bookmark.BookmarkModel" id="bookmarkModelRm">
+		<result property="createdBy" column="USER_UID" />
+		<result property="postId" column="POST_ID" />
+		<result property="commentId" column="COMMENT_ID" />
+		<result property="title" column="TITLE" />
+		<result property="postType" column="COMM_CD_POST_TYPE_ID" />
+	</resultMap>
+
+	<select id="searchBookmark" parameterType="egovframework.com.a2m.egov.model.afp.bookmark.BookmarkSearch" resultMap="bookmarkModelRm">
+		SELECT * FROM
+		((
+		SELECT
+			b.POST_ID as POST_ID,
+			p.title as TITLE,
+			p.COMM_CD_POST_TYPE_ID as COMM_CD_POST_TYPE_ID,
+			b.USER_UID as USER_UID,
+			b.CREATED_DATE as CREATED_DATE
+		FROM AFP_BOOKMARK b
+			JOIN AFP_POST p ON b.POST_ID = p.ID
+			LEFT JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		<where>
+			p.COMM_CD_POST_TYPE_ID != "09-05" AND
+			CASE
+				WHEN p.COMM_CD_POST_TYPE_ID = "09-02" THEN 	p.IS_DELETED = '0' and m.IS_DELETED = '0'
+				ELSE p.IS_DELETED = '0'
+			END
+		</where>
+		)
+		UNION ALL
+		(
+		SELECT
+			b.COMMENT_ID as POST_ID,
+			c.CONTENT as TITLE,
+			'09-03' as COMM_CD_POST_TYPE_ID,
+			b.USER_UID as USER_UID,
+			b.CREATED_DATE as CREATED_DATE
+		FROM AFP_BOOKMARK b
+			JOIN AFP_COMMENT c ON b.COMMENT_ID = c.ID
+			JOIN AFP_POST p ON p.ID = c.POST_ID
+			JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		WHERE c.IS_DELETED = '0' AND p.AFP_MENU_ID != '' AND p.IS_DELETED = '0' AND m.IS_DELETED = '0'
+		)) a
+		<where>
+			a.USER_UID = #{createdBy}
+			<if test="keySearch != null and keySearch !='' ">
+				AND lower(a.TITLE) LIKE lower(concat('%', #{keySearch}, '%'))
+			</if>
+			<if test="postType != null and postType !='' ">
+				AND a.COMM_CD_POST_TYPE_ID = #{postType}
+			</if>
+		</where>
+				ORDER BY a.CREATED_DATE DESC
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="bookmarkModelRm">
+		SELECT p.ID as POST_ID
+		from AFP_POST p
+		WHERE p.ID = #{id} AND p.IS_DELETED = '0'
+	</select>
+	
+	<insert id="bookmark" parameterType="egovframework.com.a2m.egov.model.afp.bookmark.BookmarkModel">
+		INSERT INTO AFP_BOOKMARK
+		(
+			USER_UID, 
+			POST_ID,
+			COMMENT_ID,
+			CREATED_DATE
+		)
+		VALUES
+		(
+			#{createdBy},
+			#{postId},
+			#{commentId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	
+	<delete id="unBookmark" parameterType="egovframework.com.a2m.egov.model.afp.bookmark.BookmarkModel">
+		DELETE FROM AFP_BOOKMARK
+			<where>
+			USER_UID = #{createdBy}
+			<if test="postId != null">
+				AND POST_ID = #{postId}
+			</if>
+			<if test="commentId != null">
+				AND COMMENT_ID = #{commentId}
+			</if>
+		</where>
+	</delete>
+	
+	<!-- VIEWED -->
+	<resultMap type="egovframework.com.a2m.egov.model.afp.com.PostViewedModel" id="postViewedModelRm">
+		<result property="viewedBy" column="viewedBy" />
+		<result property="postId" column="POST_ID" />
+	</resultMap>
+	
+	<select id="checkPostViewed" parameterType="egovframework.com.a2m.egov.model.afp.com.PostViewedModel" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		from AFP_POST_VIEWED v
+		WHERE v.VIEWED_BY = #{viewedBy} AND v.POST_ID = #{postId}
+	</select>
+	
+	<insert id="viewed" parameterType="egovframework.com.a2m.egov.model.afp.com.PostViewedModel">
+		INSERT INTO AFP_POST_VIEWED(VIEWED_BY, POST_ID)
+		VALUES(#{viewedBy}, #{postId})
+	</insert>
+	
+	<insert id="increasePostView" parameterType="Long">
+		UPDATE AFP_POST SET 
+		VIEW_NUMBER = ( (SELECT VIEW_NUMBER FROM AFP_POST WHERE ID = #{postId} )+1 )
+		WHERE ID = #{postId}
+	</insert>
+	
+	<!-- COMMENT -->
+	
+	<resultMap type="egovframework.com.a2m.egov.model.afp.com.CommentModel" id="CommentModelRm">
+		<id property="id" column="ID" />
+		<result property="content" column="CONTENT" />
+		<result property="commentParentId" column="COMMENT_PARENT_ID" />
+		<result property="postId" column="POST_ID" />
+		<result property="isBookmark" column="IS_BOOKMARK" />
+		
+		<result property="isLike" column="IS_LIKE" />
+		<result property="likeNumber" column="LIKE_NUMBER" />
+
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+	</resultMap>
+	
+	<select id="searchComment" parameterType="egovframework.com.a2m.egov.model.afp.com.AppCommentRequest" resultMap="CommentModelRm">
+		SELECT c.*,
+			COUNT(DISTINCT l.ID) AS LIKE_NUMBER, 
+			CASE
+				WHEN l2.COMMENT_ID IS NOT NULL THEN 'Y'
+				ELSE 'N'
+			END AS IS_LIKE,
+			CASE
+				WHEN b.COMMENT_ID IS NOT NULL THEN 'Y'
+				ELSE 'N'
+			END AS IS_BOOKMARK
+		FROM AFP_COMMENT c
+			LEFT JOIN AFP_LIKE l ON c.ID = l.COMMENT_ID
+			LEFT JOIN AFP_LIKE l2 ON c.ID = l2.COMMENT_ID AND l2.USER_UID = #{userUid}
+			LEFT JOIN AFP_BOOKMARK b ON c.ID = b.COMMENT_ID AND b.USER_UID = #{userUid}
+		<where>
+			1 = 1
+			<if test="postId != null">
+				AND c.POST_ID = #{postId}
+			</if>
+			<if test="commentParentId != null">
+				AND c.COMMENT_PARENT_ID = #{commentParentId}
+			</if>
+			AND c.IS_DELETED = '0'
+		</where>
+
+		GROUP BY c.ID
+		ORDER BY c.CREATED_DATE DESC
+		
+		<if test=" !isGetAll">
+			LIMIT #{offset}, #{size}
+		</if>
+		
+	</select>
+	
+	<select id="countComment" parameterType="egovframework.com.a2m.egov.model.afp.com.AppCommentRequest" resultType="Long">
+		SELECT COUNT(*)
+		
+		from AFP_COMMENT c
+		
+		<where>
+			1 = 1
+			<if test="postId != null">
+				AND c.POST_ID = #{postId}
+			</if>
+			AND c.POST_ID = #{postId}
+			<if test="commentParentId != null">
+				AND c.COMMENT_PARENT_ID = #{commentParentId}
+			</if>
+			AND c.IS_DELETED = '0'
+		
+		</where>
+		ORDER BY c.CREATED_DATE DESC
+	</select>
+	
+	<insert id="insertComment" parameterType="egovframework.com.a2m.egov.model.afp.com.CommentModel" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO AFP_COMMENT(CREATED_BY, CREATED_DATE, CONTENT, COMMENT_PARENT_ID, POST_ID, IS_DELETED)
+		VALUES(#{createdBy}, CURRENT_TIMESTAMP, #{content}, #{commentParentId}, #{postId}, 0)
+	</insert>
+	
+	<update id="updateComment" parameterType="egovframework.com.a2m.egov.model.afp.com.CommentModel">
+		UPDATE AFP_COMMENT
+		<set>
+	      <if test="content != null">CONTENT=#{content},</if>
+	      <if test='crudType != null and crudType == "D"'>IS_DELETED = 1,</if>
+	      UPDATED_BY = #{updatedBy},
+	      UPDATED_DATE = CURRENT_TIMESTAMP
+	    </set>
+	    WHERE ID = #{id}
+	</update>
+	
+	<select id="getCommentById" parameterType="Long" resultMap="CommentModelRm">
+		SELECT c.* 
+		from AFP_COMMENT c
+		WHERE c.ID = #{id} AND c.IS_DELETED = '0'
+	</select>
+	
+	<!-- LIKE -->
+	<insert id="addLike" parameterType="egovframework.com.a2m.egov.model.afp.com.LikeModel" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO AFP_LIKE(USER_UID, COMMENT_ID, POST_ID)
+		VALUES(#{createdBy}, #{commentId}, #{postId})
+	</insert>
+	
+	<delete id="unLike" parameterType="egovframework.com.a2m.egov.model.afp.com.LikeModel">
+		DELETE FROM AFP_LIKE
+			<where>
+			USER_UID = #{createdBy}
+			<if test="commentId != null">
+				AND COMMENT_ID = #{commentId}
+			</if>
+			<if test="postId != null">
+				AND POST_ID = #{postId}
+			</if>
+		</where>
+	</delete>
+	
+	<!-- POST -->
+	<resultMap type="egovframework.com.a2m.egov.model.afp.com.PostModel" id="postModelRm">
+		<id property="id" column="ID" />
+		<result property="title" column="TITLE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="viewNumber" column="VIEW_NUMBER" />
+		<result property="likeNumber" column="LIKE_NUMBER" />
+		<result property="commentNumber" column="COMMENT_NUMBER" />
+		<result property="isBookmark" column="IS_BOOKMARK" />
+		<result property="isLike" column="IS_LIKE" />
+	</resultMap>
+
+	<select id="getPostById" parameterType="map" resultMap="postModelRm">
+		SELECT p.*,
+		COUNT(DISTINCT l.ID) AS LIKE_NUMBER, 
+		COUNT(DISTINCT c.ID) AS COMMENT_NUMBER,
+		CASE
+			WHEN b.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_BOOKMARK,
+		CASE
+			WHEN l2.POST_ID IS NOT NULL THEN 'Y'
+			ELSE 'N'
+		END AS IS_LIKE
+		
+		from AFP_POST p 
+		
+		LEFT JOIN AFP_BOOKMARK b ON p.ID = b.POST_ID AND b.USER_UID = #{userUid}
+		
+		LEFT JOIN AFP_LIKE l ON p.ID = l.POST_ID
+		
+		LEFT JOIN AFP_LIKE l2 ON p.ID = l2.POST_ID AND l2.USER_UID = #{userUid}
+
+		LEFT JOIN AFP_COMMENT c ON p.ID = c.POST_ID
+		<where>
+			p.ID = #{postId} AND p.IS_DELETED = '0'
+		</where>
+		group by p.id
+	</select>
+	
+	<select id="getDocumentPostInfo" parameterType="Long" resultType="egovframework.com.a2m.egov.model.afp.com.DocumentPostInfo">
+		SELECT T1.ID as id,
+			T1.DESCRIPTION as description,
+			T1.TITLE as title,
+			T1.AFP_MENU_ID as afpMenuId,
+			T1.CREATED_DATE as createdDate,
+			T1.CREATED_BY as createdBy,
+			T1.UPDATED_DATE as updatedDate,
+			T1.UPDATED_BY as updatedBy,
+			T1.VIEW_NUMBER as viewNumber,
+			T1.COMM_CD_POST_TYPE_ID as commCdPostTypeId,
+			T2.TSST_MENU_ID as tsstMenuId,
+			T2.ID as afpMenuId,
+			T3.URL as url
+		FROM AFP_POST T1
+			INNER JOIN AFP_MENU T2 ON T1.AFP_MENU_ID = T2.ID
+			INNER JOIN TSST_MENU T3 ON T3.MENU_ID = T2.TSST_MENU_ID
+		WHERE T1.id = #{postId}
+	</select>
+</mapper>

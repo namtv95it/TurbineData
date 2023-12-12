@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sys0201DAO">
+
+	<select id="getTsstRole" parameterType="map" resultType="map">
+		SELECT
+		ROLE_ID,
+		ROLE_NM,
+		USE_YN,
+		DESCRIPTION,
+		CREATED_BY,
+		CREATED_DATE,
+		UPDATED_BY,
+		UPDATED_DATE
+		FROM TSST_ROLE
+		WHERE ROLE_ID = #{roleId}
+	</select>
+
+
+	<select id="searchTsstRole" parameterType="map" resultType="egovframework.com.a2m.egov.model.response.TsstRoleResponse">
+		SELECT
+		ROLE_ID as roleId,
+		ROLE_NM as roleNm,
+		USE_YN as useYn,
+		DESCRIPTION
+		as description,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate,
+		UPDATED_BY as updatedBy,
+		UPDATED_DATE as updatedDate
+		FROM TSST_ROLE
+		<where>
+			<if test="roleNm != null">
+				AND LOWER(ROLE_NM) LIKE LOWER(CONCAT('%', #{roleNm}, '%'))
+			</if>
+			<if test="useYn != null">
+				AND USE_YN = #{useYn}
+			</if>
+		</where>
+			
+		ORDER BY CREATED_DATE DESC
+		
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<delete id="deleteTsstRole" parameterType="String">
+		DELETE FROM TSST_ROLE
+		WHERE ROLE_ID = #{roleId}
+	</delete>
+
+	<insert id="insertTsstRole" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleRequest">
+		INSERT INTO TSST_ROLE
+		(
+		ROLE_ID,
+		ROLE_NM,
+		USE_YN,
+		DESCRIPTION,
+		CREATED_BY,
+		CREATED_DATE,
+		UPDATED_BY,
+		UPDATED_DATE
+		)
+		VALUES(
+		#{roleId},
+		#{roleNm},
+		#{useYn},
+		#{description},
+		#{createdBy},
+		SYSDATE(),
+		#{updatedBy},
+		#{updatedDate}
+		)
+	</insert>
+
+	<update id="updateTsstRole" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleRequest">
+		UPDATE TSST_ROLE
+		SET ROLE_ID = ROLE_ID
+		<if test="roleNm != null">
+			,ROLE_NM = #{roleNm}
+		</if>
+		<if test="useYn != null">
+			,USE_YN = #{useYn}
+		</if>
+		<if test="description != null">
+			,DESCRIPTION = #{description}
+		</if>
+		<if test="updatedBy != null and updatedBy != ''">
+			,UPDATED_BY = #{updatedBy}
+		</if>
+		,UPDATED_DATE = SYSDATE()
+		WHERE ROLE_ID = #{roleId}
+	</update>
+
+	<select id="getMaxRoleId" parameterType="String" resultType="String">
+		SELECT MAX(ROLE_ID) FROM TSST_ROLE WHERE ROLE_ID NOT IN
+		(
+		<foreach collection="list" item="element" index="index" separator=",">  
+   			 #{element} 
+		</foreach>
+		)
+		<!-- ROLE_ID != "R3RD" AND ROLE_ID != "ROLE_ANONYMOUS"  -->
+	</select>
+
+	<select id="getTsstUserRole" parameterType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest" resultType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest">
+		SELECT
+		ROLE_ID as roleId,
+		USER_UID as userUid
+		FROM
+		TSST_USER_ROLE
+		WHERE ROLE_ID = #{roleId} AND USER_UID = #{userUid}
+	</select>
+
+	<select id="getRoles" parameterType="String" resultType="map">
+		SELECT
+		DISTINCT CONCAT(menu.URL, '$', lm.READ_YN, ':', lm.WRT_YN, ':',
+		lm.MOD_YN, ':', lm.DEL_YN, ':', lm.PNT_YN, ':', lm.EXC_DN_YN, ':',
+		lm.MNG_YN) ROLES
+		FROM TSST_USER_ROLE role
+		INNER JOIN TSST_ROLE_MENU lm
+		ON role.ROLE_ID
+		= lm.ROLE_ID
+		INNER JOIN TSST_MENU menu ON menu.MENU_ID =
+		lm.MENU_ID
+		WHERE USER_UID = #{userUid}
+	</select>
+
+	<select id="searchTsstUserRole" parameterType="map" resultType="egovframework.com.a2m.egov.model.TsstUserRole">
+		SELECT
+		ROLE_ID as roleId,
+		USER_UID as userUid
+		FROM TSST_USER_ROLE
+		WHERE 1
+		= 1
+		<if test="roleId != null and roleId != ''">
+			<trim prefix="AND">
+				ROLE_ID LIKE CONCAT('%', #{roleId}, '%')
+			</trim>
+		</if>
+		<if test="userUid != null and userUid != ''">
+			<trim prefix="AND">
+				USER_UID = #{userUid}
+			</trim>
+		</if>
+	</select>
+
+	<delete id="deleteTsstUserRole" parameterType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest">
+		DELETE FROM TSST_USER_ROLE
+		WHERE ROLE_ID = #{roleId} AND
+		USER_UID = #{userUid}
+	</delete>
+
+	<insert id="insertTsstUserRole" parameterType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest">
+		INSERT INTO
+		TSST_USER_ROLE
+		(
+		ROLE_ID,
+		USER_UID
+		)
+		VALUES(
+		#{roleId},
+		#{userUid}
+		)
+	</insert>
+
+	<update id="updateTsstUserRole" parameterType="egovframework.com.a2m.egov.model.request.TsstUserRoleRequest">
+		UPDATE TSST_USER_ROLE SET
+		ROLE_ID = #{ROLE_ID},
+		USER_UID =
+		#{USER_UID}
+		WHERE ID = #{id}
+	</update>
+
+	<select id="searchTsstRoleMenu" parameterType="map" resultType="egovframework.com.a2m.egov.model.response.TsstRoleMenuResponse">
+		SELECT
+		ROLE_ID as roleId,
+		MENU_ID as menuId,
+		READ_YN as readYn,
+		WRT_YN as
+		wrtYn,
+		MOD_YN as modYn,
+		DEL_YN as delYn,
+		PNT_YN as pntYn,
+		EXC_DN_YN as
+		excDnYn,
+		MNG_YN as mngYn,
+		CREATED_BY as createdBy,
+		CREATED_DATE as
+		createdDate
+		FROM TSST_ROLE_MENU
+		WHERE 1 = 1
+		<if test="roleId != null and roleId != ''">
+			<trim prefix="AND">
+				LOWER(ROLE_ID) LIKE LOWER(CONCAT('%', #{roleId},
+				'%'))
+			</trim>
+		</if>
+		<if test="menuId != null and menuId != ''">
+			<trim prefix="AND">
+				LOWER(MENU_ID) LIKE LOWER(CONCAT('%', #{menuId},
+				'%'))
+			</trim>
+		</if>
+		<if test="readYn != null and readYn != ''">
+			<trim prefix="AND">
+				READ_YN = #{readYn}
+			</trim>
+		</if>
+		<if test="wrtYn != null and wrtYn != ''">
+			<trim prefix="AND">
+				WRT_YN = #{wrtYn}
+			</trim>
+		</if>
+		<if test="modYn != null and modYn != ''">
+			<trim prefix="AND">
+				MOD_YN = #{modYn}
+			</trim>
+		</if>
+		<if test="delYn != null and delYn != ''">
+			<trim prefix="AND">
+				DEL_YN = #{delYn}
+			</trim>
+		</if>
+		<if test="pntYn != null and pntYn != ''">
+			<trim prefix="AND">
+				PNT_YN = #{pntYn}
+			</trim>
+		</if>
+		<if test="excDnYn != null and excDnYn != ''">
+			<trim prefix="AND">
+				EXC_DN_YN = #{excDnYn}
+			</trim>
+		</if>
+		<if test="mngYn != null and mngYn != ''">
+			<trim prefix="AND">
+				MNG_YN = #{mngYn}
+			</trim>
+		</if>
+		<if test="createdBy != null and createdBy != ''">
+			<trim prefix="AND">
+				CREATED_BY = #{createdBy}
+			</trim>
+		</if>
+		<if test="createdDate != null and createdDate != ''">
+			<trim prefix="AND">
+				CREATED_DATE = #{createdDate}
+			</trim>
+		</if>
+	</select>
+
+	<select id="getTsstRoleMenu" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleMenuRequest" resultType="egovframework.com.a2m.egov.model.response.TsstRoleMenuResponse">
+		SELECT
+		ROLE_ID as roleId,
+		MENU_ID as menuId,
+		READ_YN as
+		readYn,
+		WRT_YN as wrtYn,
+		MOD_YN as modYn,
+		DEL_YN as delYn,
+		PNT_YN as
+		pntYn,
+		EXC_DN_YN as excDnYn,
+		MNG_YN as mngYn,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate
+		FROM TSST_ROLE_MENU
+		WHERE ROLE_ID =
+		#{roleId}
+		AND MENU_ID = #{menuId}
+	</select>
+
+	<insert id="insertTsstRoleMenu" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleMenuRequest">
+		INSERT INTO TSST_ROLE_MENU
+		(
+		ROLE_ID,
+		MENU_ID,
+		READ_YN,
+		WRT_YN,
+		MOD_YN,
+		DEL_YN,
+		PNT_YN,
+		EXC_DN_YN,
+		MNG_YN,
+		CREATED_BY,
+		CREATED_DATE
+		)
+		VALUES(
+		#{roleId},
+		#{menuId},
+		#{readYn},
+		#{wrtYn},
+		#{modYn},
+		#{delYn},
+		#{pntYn},
+		#{excDnYn},
+		#{mngYn},
+		#{createdBy},
+		SYSDATE()
+		)
+	</insert>
+
+	<update id="updateTsstRoleMenu" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleMenuRequest">
+		UPDATE TSST_ROLE_MENU
+		SET ROLE_ID = ROLE_ID
+		<if test="readYn != null and readYn != ''">
+			,READ_YN = #{readYn}
+		</if>
+		<if test="wrtYn != null and wrtYn != ''">
+			,WRT_YN = #{wrtYn}
+		</if>
+		<if test="modYn != null and modYn != ''">
+			,MOD_YN = #{modYn}
+		</if>
+		<if test="delYn != null and delYn != ''">
+			,DEL_YN = #{delYn}
+		</if>
+		<if test="pntYn != null and pntYn != ''">
+			,PNT_YN = #{pntYn}
+		</if>
+		<if test="excDnYn != null and excDnYn != ''">
+			,EXC_DN_YN = #{excDnYn}
+		</if>
+		<if test="mngYn != null and mngYn != ''">
+			,MNG_YN = #{mngYn}
+		</if>
+		<if test="createdBy != null">
+			,CREATED_BY = #{createdBy}
+		</if>
+		<if test="createdDate != null">
+			,CREATED_DATE = #{createdDate}
+		</if>
+		WHERE ROLE_ID = #{roleId}
+		AND MENU_ID = #{menuId}
+	</update>
+	
+	<delete id="deleteTsstRoleMenu" parameterType="egovframework.com.a2m.egov.model.request.TsstRoleMenuRequest">
+		DELETE FROM TSST_ROLE_MENU
+		WHERE ROLE_ID = #{roleId}
+		AND MENU_ID = #{menuId}
+	</delete>
+
+	<select id="countRole" parameterType="map" resultType="Integer">
+		SELECT
+        COUNT(*)
+        FROM TSST_ROLE 
+		<where>
+			<if test="roleNm != null and roleNm != ''">
+				<trim prefix="AND">
+	                LOWER(ROLE_NM) LIKE LOWER(CONCAT('%', #{roleNm}, '%'))
+	            </trim>
+			</if>
+		</where>
+	</select>
+	
+	<select id="searchAllMenu"
+		parameterType="map"
+		resultType="egovframework.com.a2m.egov.model.TsstMenu">
+		SELECT
+		MENU_ID as menuId,
+		MENU_NM as menuNm,
+		MENU_NM_EN as menuNmEn,
+		MENU_NM_VI as menuNmVi,
+		LEV as lev,
+		UP_MENU_ID as upMenuId,
+		USE_YN as useYn,
+		URL as url,
+		ORD_NO as ordNo,
+		MENU_TYPE as menuType,
+		DESCRIPTION as description,
+		CREATED_BY as createdBy,
+		CREATED_DATE as createdDate,
+		UPDATED_BY as updatedBy,
+		UPDATED_DATE as updatedDate
+		FROM TSST_MENU
+		<where>
+			<if test="menuNm != null">
+			AND
+			(
+				LOWER(MENU_NM) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+				OR
+				LOWER(MENU_NM_EN) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+				OR
+				LOWER(MENU_NM_VI) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+			)
+		</if>
+		</where>
+		ORDER BY MENU_ID ASC, ORD_NO ASC,LEV ASC
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+		
+	</select>
+	
+		<select id="countMenu" parameterType="map" resultType="Integer">
+		SELECT
+        COUNT(*)
+        FROM TSST_MENU 
+		<where>
+		<if test="menuNm != null and menuNm != ''">
+			<trim prefix="AND">
+			(
+				LOWER(MENU_NM) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+				OR
+				LOWER(MENU_NM_EN) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+				OR
+				LOWER(MENU_NM_VI) LIKE LOWER(CONCAT('%', #{menuNm}, '%'))
+			)
+			</trim>
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteUserRole" parameterType="String">
+		DELETE FROM TSST_USER_ROLE
+		WHERE USER_UID = #{userUid}
+	</delete>
+
+</mapper>

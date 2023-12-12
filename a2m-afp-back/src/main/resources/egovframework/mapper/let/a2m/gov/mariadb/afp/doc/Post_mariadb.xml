@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PostDAO">
+
+	<!-- ____________________________________CURD AFP_POST_____________________________________________________-->
+	
+	<insert id="insert" parameterType="egovframework.com.a2m.egov.model.afp.doc.AfpPostRequest">
+		INSERT INTO AFP_POST
+		(
+			TITLE,
+			DESCRIPTION,
+			VIEW_NUMBER,
+			AFP_MENU_ID,
+			COMM_CD_POST_TYPE_ID,
+			CREATED_DATE,
+			CREATED_BY,
+			IS_DELETED
+		)
+		VALUES
+		(
+			#{title},
+			#{description},
+			#{viewNumber},
+			#{afpMenuId},
+			#{commCdPostTypeId},
+			#{createdDate},
+			#{createdBy},
+			#{deleted}
+		);
+	</insert>
+
+	<update id="update" parameterType="egovframework.com.a2m.egov.model.afp.doc.AfpPostRequest">
+		UPDATE AFP_POST
+		SET
+			TITLE = #{title},
+			DESCRIPTION = #{description},
+			<if test="viewNumber != null and viewNumber != ''">
+				VIEW_NUMBER = #{viewNumber},
+			</if>
+			<if test="commCdPostTypeId != null and commCdPostTypeId != ''">
+				COMM_CD_POST_TYPE_ID = #{commCdPostTypeId},
+			</if>
+			<if test="deleted != null and deleted != ''">
+				IS_DELETED = #{deleted}
+			</if>
+			UPDATED_BY = #{updatedBy},
+			UPDATED_DATE = #{updatedDate}
+			
+		WHERE ID = #{id};
+	</update>
+	
+	<update id="deleteById" parameterType="Long">
+		UPDATE AFP_POST
+		SET
+			IS_DELETED = 1
+		WHERE ID = #{id};
+	</update>
+	
+	<update id="deleteByAfpMenu" parameterType="Long">
+		UPDATE AFP_POST
+		SET
+			IS_DELETED = 1
+		WHERE AFP_MENU_ID IN (
+				WITH RECURSIVE TEMP AS (
+					SELECT A1.*
+					FROM AFP_MENU A1
+					WHERE ID = #{menuId}
+					UNION
+					SELECT B1.*
+					FROM AFP_MENU B1
+						INNER JOIN TEMP ON B1.MENU_PARENT_ID = TEMP.ID
+			)
+			SELECT ID FROM TEMP
+		);
+	</update>
+	
+	<select id="findByAfpMenuId" parameterType="Long" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpPostResponse">
+		SELECT ID as id,
+			DESCRIPTION as description,
+			TITLE as title,
+			AFP_MENU_ID as afpMenuId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy,
+			VIEW_NUMBER as viewNumber,
+			COMM_CD_POST_TYPE_ID as commCdPostTypeId
+		FROM AFP_POST 
+		WHERE AFP_MENU_ID = #{menuId} AND IS_DELETED = 0
+	</select>
+	
+	
+	<!-- _______________________________________________________Bookmark________________________________________________________________ -->
+	
+	<select id="checkBookmark" parameterType="map" resultType="Integer">
+		SELECT COUNT(*)
+		FROM AFP_BOOKMARK 
+		WHERE USER_UID = #{userUid} AND POST_ID = #{postId}
+	</select>
+	
+	
+</mapper>

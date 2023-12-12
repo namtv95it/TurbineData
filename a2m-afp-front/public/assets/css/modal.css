@@ -1,0 +1,76 @@
+@charset "UTF-8";
+
+/*************************************
+    # modal
+************************************/
+
+.scroll-hidden {overflow: hidden; height: 100%;} 
+
+.modal {opacity: 0; visibility: hidden; position: absolute; top: 0; left: 0; z-index: 10; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(20px); transition: all 0.3s;}
+.modal .modal-cont {opacity: 0; visibility: hidden; position: relative; display: flex; flex-direction: column; min-width: 660px; max-width: 1200px; height: 700px;}
+
+/* modal open */
+.modal.open {opacity: 1; visibility: visible;}
+.modal.open .modal-cont {opacity: 1; visibility: visible; animation: appear 500ms;}
+
+@keyframes appear {
+    0% {opacity: 0; transform: translateY(-20px);}
+}
+
+.modal-tit {font-size: 35px; font-weight: 600; color: var(--color-dark); padding: 0 60px 13px 0; margin-bottom: 5px; overflow: hidden; white-space: normal; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical; display: -webkit-box; word-break: break-all;}
+.modal .close-btn {position: absolute; top: 12px; right: 14px;}
+
+/* 컨텐츠 영역 */
+.modal-content-area {height: calc(100% - 142px); overflow-x: hidden; overflow-y: scroll; padding-right: 10px;} /* 높이값 고정 */
+.modal-content-area::-webkit-scrollbar {width: 5px;}
+.modal-content-area::-webkit-scrollbar-thumb {border-radius: 4rem; border: 0.4rem solid rgba(128, 154, 241, 0.2);} 
+
+/* subject */
+.subject input {background: var(--register-back); border: none;}
+
+/* 버튼 영역 */
+.modal .modal-btn-wrap {text-align: right; margin-top: auto; padding: 20px 10px 0 0;}
+.modal .modal-btn-wrap [class^="btn"] {font-size: 14px;}
+.modal .modal-btn-wrap .btn3 {padding: 0 28px;}
+.modal .modal-btn-wrap .btn2 {padding: 0 34px;}
+
+.modal .close-btn::before {font-size: 26px;}
+.modal .close-btn:hover {background: none;}
+
+/* editor custom */
+.new-proj-editor .ck-content {height: 186px;} /* New project  */
+.new-announce-editor .ck-content {height: 455px;} /* new-announce-editor */
+.modify-editor .ck-content {height: 397px;} /* modify-editor */
+
+/* bookmark-wrap (북마크 모달 view 화면)
+--------------------------------------------- */
+.modal-tit .xi-bookmark {margin-left: 6px; font-size: 39px; vertical-align: middle; color: #FF767C;}
+
+.bookmark-wrap .tab-board-lst li {position: relative; margin-top: 8px; padding: 10px 15px; background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0.12px rgba(255, 255, 255, 0.4), 0 0 3px rgba(0, 0, 0, 0.01); border: var(--border); border-radius: 10px; cursor: pointer;}
+.bookmark-wrap .tab-board-lst li::before {content: ""; position: absolute; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; backdrop-filter: blur(10px);}
+
+.bookmark-wrap .tab-board-lst li:hover {background: rgba(255, 255, 255, 0.5);}
+.bookmark-wrap .tab-board-lst li .subject {font-weight: 500;}
+
+/* profile-edit-wrap (프로필 수정 화면)
+--------------------------------------------- */
+.profile-edit-wrap .user-info {display: flex; align-items: center; gap: 15px; margin: 10px 0 15px;}
+.profile-edit-wrap .user-info-wrap {position: relative; height: 80px;}
+.profile-edit-wrap .user-thumb {width: 80px; height: 80px;}
+.profile-edit-wrap .user-thumb::before {font-size: 28px;}
+
+.profile-edit-wrap .more {position: absolute; right: 0; bottom: 0; width: 25px; height: 25px; border-radius: 50%; background: var(--color-primary); font-size: initial; transition: all 0.2s;}
+.profile-edit-wrap .more:hover {background: var(--color-primary-hover);}
+.profile-edit-wrap .more::before {content: "\f304"; font-family: var(--lineawesome); font-size: 15px; font-weight: bold; color: #fff;}
+
+.profile-edit-wrap .context-menu {left: 58px; top: 87px;}
+
+.profile-edit-wrap .user-info .user-name {font-size: 23px; font-weight: 700; color: var(--color-dark);}
+.profile-edit-wrap .input-group {/*display: inline-block;*/ width: calc(100% / 2 - 20px);}
+.profile-edit-wrap .input-group:nth-of-type(odd) {margin-left: 35px;}
+
+/* modal-announce-wrap (공지사항 모달 view 화면)
+--------------------------------------------- */
+.modal-announce-wrap [class*="board-lst"].view-type-single {position: relative; height: 100%; overflow: hidden;}
+.modal-announce-wrap .board-lst.view-type-single .utility {top: 0; right: 0;}
+.modal-announce-wrap .board-lst.view-type-single .board-body {margin: 20px 42px 60px 0;}

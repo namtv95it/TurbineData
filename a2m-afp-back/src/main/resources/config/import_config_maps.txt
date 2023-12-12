@@ -1,0 +1,1 @@
+import Sam0106 from "../pages/sam/sam0106/Sam0106";

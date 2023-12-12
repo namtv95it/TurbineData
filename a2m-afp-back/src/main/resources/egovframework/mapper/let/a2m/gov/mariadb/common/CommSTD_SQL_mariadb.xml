@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Thu Mar 12 15:27:16 
+	ICT 2020 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommSTDDAO">
+
+	<select id="getCommNmByCommCd" parameterType="map"
+		resultType="String">
+		SELECT COMM_NM FROM TCCO_STD WHERE COMM_CD = #{commCd}
+	</select>
+
+	<select id="getTccoStd" resultMap="ttcoSTDRm"
+		parameterType="String">
+		select * from TCCO_STD where UP_COMM_CD = #{upCommCd}
+	</select>
+
+	<resultMap type="egovframework.com.a2m.egov.model.TccoSTD"
+		id="ttcoSTDRm">
+		<id property="commCd" column="COMM_CD" />
+		<result property="commNm" column="COMM_NM" />
+		<result property="commNmEn" column="COMM_NM_EN" />
+		<result property="lev" column="LEV" />
+		<result property="upCommCd" column="UP_COMM_CD" />
+		<result property="useYn" column="USE_YN" />
+	</resultMap>
+
+</mapper>

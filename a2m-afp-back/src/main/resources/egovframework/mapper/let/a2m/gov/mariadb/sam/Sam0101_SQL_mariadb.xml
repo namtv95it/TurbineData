@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sam0101DAO">
+	<select id="getList" parameterType="map" resultMap="sam0101Rm">
+		select T1.* 
+<!-- 		T2.USER_ID as CREATED_BY_NM  -->
+		from TSST_SAM T1
+<!-- 		JOIN TSST_USER T2 on T1.CREATED_BY = T2.USER_UID -->
+		<where>
+			<if test="title != null">
+				AND lower(T1.TITLE) LIKE lower(concat('%', #{title},
+				'%'))
+			</if>
+			<if test="category != null">
+				AND T1.CATEGORY = #{category}
+			</if>
+			<if test="topic != null">
+				AND T1.TOPIC = #{topic}
+			</if>
+			<if test="date != null">
+				AND DATE_FORMAT(T1.DATE, '%Y-%m-%d') =
+				DATE_FORMAT(#{date},
+				'%Y-%m-%d')
+			</if>
+		</where>
+
+		<if test="columnName == null">
+			ORDER BY ID DESC
+		</if>
+		
+		<if test="columnName != null and sortType != null">
+			ORDER BY ${columnName} ${sortType}
+		</if>
+
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" parameterType="map" resultType="Long">
+		select count(*) from TSST_SAM
+		<where>
+			<if test="title != null">
+				AND lower(TITLE) LIKE lower(concat('%', #{title}, '%'))
+			</if>
+			<if test="category != null">
+				AND CATEGORY = #{category}
+			</if>
+			<if test="topic != null">
+				AND TOPIC = #{topic}
+			</if>
+			<if test="date != null">
+				AND DATE_FORMAT(DATE, '%Y-%m-%d') = DATE_FORMAT(#{date},
+				'%Y-%m-%d')
+			</if>
+		</where>
+	</select>
+
+	<select id="getById" resultMap="sam0101Rm" parameterType="Long">
+		select
+		* from TSST_SAM where ID = #{id}
+	</select>
+
+	<insert id="insert"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0101Model">
+		insert into TSST_SAM
+		(
+		CATEGORY, TOPIC, TITLE, EMAIL,
+		PHONE, DATE, CONTENT, CHECKBOX, SWITCH_INPUT, STATUS, CREATED_BY,
+		CREATED_DATE, FROM_DATE, TO_DATE
+		)
+		values(#{category}, #{topic},
+		#{title}, #{email}, #{phone}, #{date}, #{content},
+		#{checkbox},
+		#{switchInput}, #{status}, #{createdBy}, CURRENT_TIMESTAMP,
+		#{fromDate}, #{toDate})
+	</insert>
+
+	<update id="update"
+		parameterType="egovframework.com.a2m.egov.model.sam.Sam0101Model">
+		update TSST_SAM
+		<set>
+			CATEGORY = #{category},
+			TOPIC = #{topic},
+			TITLE = #{title},
+			EMAIL =
+			#{email},
+			PHONE = #{phone},
+			DATE = #{date},
+			CONTENT = #{content},
+			CHECKBOX = #{checkbox},
+			SWITCH_INPUT = #{switchInput},
+			STATUS =
+			#{status},
+			UPDATED_BY = #{updatedBy},
+			UPDATED_DATE = CURRENT_TIMESTAMP,
+			FROM_DATE = #{fromDate},
+			TO_DATE = #{toDate}
+		</set>
+		WHERE ID = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="Long">
+		delete from TSST_SAM where
+		ID = #{id}
+	</delete>
+
+	<select id="getTccoStd" resultMap="ttcoSTDRm"
+		parameterType="String">
+		select * from TCCO_STD where UP_COMM_CD = #{upCommCd}
+	</select>
+
+	<select id="getTccoStdByValueConfig" resultMap="ttcoSTDRm"
+		parameterType="String">
+		select * from TCCO_STD where VALUE_CONFIG = #{url}
+	</select>
+
+	<resultMap
+		type="egovframework.com.a2m.egov.model.sam.Sam0101Model"
+		id="sam0101Rm">
+		<id property="id" column="ID" />
+		<result property="category" column="CATEGORY" />
+		<result property="topic" column="TOPIC" />
+		<result property="title" column="TITLE" />
+		<result property="email" column="EMAIL" />
+		<result property="phone" column="PHONE" />
+		<result property="checkbox" column="CHECKBOX" />
+		<result property="switchInput" column="SWITCH_INPUT" />
+		<result property="date" column="DATE" />
+		<result property="content" column="CONTENT" />
+		<result property="status" column="STATUS" />
+		<result property="createdBy" column="CREATED_BY" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdByNm" column="CREATED_BY_NM" />
+		<result property="fromDate" column="FROM_DATE" />
+		<result property="toDate" column="TO_DATE" />
+	</resultMap>
+
+	<resultMap type="egovframework.com.a2m.egov.model.TccoSTD"
+		id="ttcoSTDRm">
+		<id property="commCd" column="COMM_CD" />
+		<result property="commNm" column="COMM_NM" />
+		<result property="commNmEn" column="COMM_NM_EN" />
+		<result property="lev" column="LEV" />
+		<result property="upCommCd" column="UP_COMM_CD" />
+		<result property="useYn" column="USE_YN" />
+	</resultMap>
+</mapper>

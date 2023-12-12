@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-topbar="light"
+	data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
+<head th:insert="fragments/header-fragment.html"></head>
+<body id = "ROOT_ID">
+	<!-- auth-page wrapper -->
+	<div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+		<div class="bg-overlay"></div>
+		<!-- auth-page content -->
+		<div class="auth-page-content overflow-hidden pt-lg-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="card overflow-hidden m-0">
+							<div class="row justify-content-center g-0">
+								<div class="col-lg-6">
+									<div th:replace="fragments/carousel-fragment.html"></div>
+									
+								</div>
+
+								<div class="col-lg-6">
+									<div class="p-lg-5 p-4">
+										<div>
+											<h5 class="text-primary">Register Account</h5>
+											<!-- <p class="text-muted">Get your Free Atwom account now.</p> -->
+										</div>
+
+										<div class="mt-4">
+											<form class="needs-validation">
+												<div class="mb-3">
+													<label for="USERNAME" class="form-label">Username <span
+														class="text-danger">*</span></label> <input type="text"
+														class="form-control" id="USERNAME"
+														placeholder="Enter username" required>
+													<div class="invalid-feedback">Please enter username</div>
+												</div>
+
+												<div class="mb-3">
+													<label class="form-label" for="PASSWORD">Password <span
+														class="text-danger">*</span></label>
+													<div class="position-relative auth-pass-inputgroup">
+														<input type="password"
+															class="form-control pe-5 password-input"
+															placeholder="Enter password" id="PASSWORD" required>
+														<button
+															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted shadow-none"
+															type="button" id="password-addon">
+															<i class="ri-eye-fill align-middle"></i>
+														</button>
+														<div class="invalid-feedback">Please enter password
+														</div>
+													</div>
+												</div>
+
+												<div class="mb-3">
+													<label class="form-label" for="CONFIRM_PASSWORD">Confirm
+														Password <span class="text-danger">*</span>
+													</label>
+													<div class="position-relative auth-pass-inputgroup">
+														<input type="password"
+															class="form-control pe-5 password-input"
+															placeholder="Enter password" id="CONFIRM_PASSWORD"
+															required>
+														<button
+															class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted shadow-none"
+															type="button" id="password-addon">
+															<i class="ri-eye-fill align-middle"></i>
+														</button>
+														<div class="invalid-feedback">Please enter confirm
+															password</div>
+													</div>
+												</div>
+
+												<div class="mb-3">
+													<label for="FULL_NAME" class="form-label">Full name
+														<span class="text-danger">*</span>
+													</label> <input type="text" class="form-control" id="FULL_NAME"
+														placeholder="Enter full name" required>
+													<div class="invalid-feedback">Please enter full name
+													</div>
+												</div>
+
+												<div class="mb-3">
+													<label for="EMAIL" class="form-label">Email <span
+														class="text-danger">*</span></label> <input type="email"
+														class="form-control" id="EMAIL"
+														placeholder="Enter email address" required>
+													<div class="invalid-feedback">Please enter email</div>
+												</div>
+
+												<div class="mb-3">
+													<label for="CELL_PHONE" class="form-label">Cell
+														phone <span class="text-danger">*</span>
+													</label> <input type="text" class="form-control" id="CELL_PHONE"
+														placeholder="Enter cell phone" required>
+													<div class="invalid-feedback">Please enter cell phone
+													</div>
+												</div>
+
+												<!-- <div class="mb-3">
+                                                    <label for="GENDER" class="form-label">Gender <span class="text-danger">*</span></label>
+                                                    <div>
+                                                    	<div class="form-check form-check-inline">
+                                                        	<input class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio1" value="option1">
+                                                        	<label class="form-check-label" for="inlineRadio1">Male</label>
+                                                    	</div>
+                                                    	<div class="form-check form-check-inline">
+                                                        	<input class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio1" value="option1">
+                                                        	<label class="form-check-label" for="inlineRadio1">Female</label>
+                                                    	</div>
+                                                    </div>
+                                                    
+                                                </div> -->
+
+
+												<div id="password-contain" class="p-3 bg-light mb-2 rounded">
+													<h5 class="fs-13">Password must contain:</h5>
+													<p id="pass-length" class="invalid fs-12 mb-2">
+														Minimum <b>8 characters</b>
+													</p>
+													<p id="pass-lower" class="invalid fs-12 mb-2">
+														At <b>lowercase</b> letter (a-z)
+													</p>
+													<p id="pass-upper" class="invalid fs-12 mb-2">
+														At least <b>uppercase</b> letter (A-Z)
+													</p>
+													<p id="pass-number" class="invalid fs-12 mb-0">
+														A least <b>number</b> (0-9)
+													</p>
+												</div>
+
+												<div class="mt-4">
+													<button class="btn btn-success w-100" type="button"
+														id="SIGN_UP_BTN">Sign Up</button>
+												</div>
+
+											</form>
+										</div>
+
+										<div class="mt-5 text-center">
+											<p class="mb-0">
+												Already have an account ? <a href="javascript:void(0)"
+													class="fw-semibold text-primary text-decoration-underline"
+													id="LOGIN_BTN"> Signin</a>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="fragments/footer-fragment.html"></div>
+	</div>
+
+	<div id="OTP_POPUP"></div>
+	<input class="input100" type="text" id="REDIRECT_URI" th:value="${redirect_uri}" style="display: none">
+	
+	<script src="js/common/common.js"></script>
+	<script src="js/common/elements.js"></script>
+
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			let redirectUrl = $('input#REDIRECT_URI').val();
+			
+			$('button#SIGN_UP_BTN').css('cursor', 'pointer').click(onSignUp);
+			$('#LOGIN_BTN').css('cursor', 'pointer').click(function() {
+				window.location.href = "/login?redirect_uri=" + redirectUrl;
+			});
+		});
+		
+		function onSignUp(){
+			if (validation()){
+				return;
+			} 
+			Spinner.show();
+			setTimeout(()=>{
+				var params = createParams();
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/sign-up', JSON.stringify(params), 'POST');
+				Spinner.hide();
+				if (data.status == "OK"){
+					openEmailVerifyPopup();
+					var url = BASE_URL + '/api/auth/mail-send-otp?email=' + params.email;
+					var response = sys.mariaDB.ajax(url, null, 'GET', true);
+				}else {
+					ShowToast.error(data.message);
+				}
+			}, 1000);
+		}
+		
+		function validation(){
+			var request = createParams();
+			if (isEmpty(request.userId)){
+				ShowToast.error("Username is required");
+				return 	true;
+			}
+			
+			if (isEmpty(request.pwd)){
+				ShowToast.error("Password is required");
+				return 	true;
+			}
+			
+			if (isEmpty(request.confirmPassword)){
+				ShowToast.error("Confirm Password is required");
+				return 	true;
+			}
+			
+			if (isEmpty(request.fullName)){
+				ShowToast.error("Full name Password is required");
+				return 	true;
+			}
+			
+			if (isEmpty(request.email)){
+				ShowToast.error("Email is required");
+				return 	true;
+			}
+			
+			if (isEmpty(request.cellPhone)){
+				ShowToast.error("Cell Phone is required");
+				return 	true;
+			}
+			
+			if (request.confirmPassword != request.pwd){
+				ShowToast.error("Confirm password does not match password");
+				return true;
+			}
+			
+			if (!isEmpty(request.email)) {
+				var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+				if (!request.email.match(validRegex)){
+					ShowToast.error("Invalid email");
+					return true;
+				}
+			}
+			
+			/* if (!isEmpty(request.cellPhone)) {
+				var validRegex = /^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$/;
+				if (!request.cellPhone.match(validRegex)){
+					ShowToast.error("Invalid Cell Phone");
+					return true;
+				}
+			} */
+				
+			return false;
+		}
+		
+		function isEmpty(str){
+			if (str != null && str != undefined && str.trim().length != 0){
+				return false;
+			}
+			return true;
+		}
+		
+		function verifyOtp(){
+			Spinner.show();
+			
+			setTimeout(() =>{
+				var request = {};
+				request.otpCode = $("#OTP_CODE").val();
+				request.email = $('input#EMAIL').val();
+				var params = sys.convertParam(request);
+				var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/mail-verify-otp',params);
+				Spinner.hide();
+				if (data.status == 'OK'){
+					ShowToast.success(data.messages);
+					$("#OTP_MODAL").modal('hide');
+					setTimeout(()=>{
+						window.location.href = "/login?redirect_uri=" + $("#REDIRECT_URI").val();
+					}, 1000);
+					
+				}else{
+					ShowToast.error(data.messages);
+				}
+			}, 1000);
+			
+		}
+		 
+		function openEmailVerifyPopup(){
+			makeOtpPopup();
+			$("#OTP_MODAL").modal('show');
+		}
+		
+		function createParams(){
+			var params = {};
+			params.userId = $('input#USERNAME').val();
+			params.pwd = $('input#PASSWORD').val();
+			params.confirmPassword = $('input#CONFIRM_PASSWORD').val();
+			params.fullName = $('input#FULL_NAME').val();
+			params.email = $('input#EMAIL').val();
+			params.cellPhone = $('input#CELL_PHONE').val();
+			/* params.gender = $('input#GENDER').val(); */
+			return params;
+		}
+		
+		function makeOtpPopup(){
+			var email = $('input#EMAIL').val();
+			var sample = ''
+				+ '<div id="OTP_MODAL" class="modal fade" tabindex="-1">'
+				+ ' 	<div class="modal-dialog modal-dialog-centered">'
+				+ ' 		<div class="modal-content">'
+				+ ' 			<div class="modal-header">'
+				+ ' 				<h5 class="modal-title">Email Verification</h5>'
+				+ ' 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+				+ '				</div>'
+				+ ' 			<div class="modal-body">'
+				+ '					<div class="mb-4">'		
+				+ '						<div class="avatar-lg mx-auto">'
+				+ '							<div class="avatar-title bg-light text-primary display-5 rounded-circle shadow">'
+				+ '								<i class="ri-mail-line"></i>'
+				+ '							</div>'
+				+ '						</div>'
+				+ '					</div>'
+				+ '					<div class="text-muted text-center mx-lg-3">'
+				+ '						<h4 class="">Verify Your Email</h4>'
+				+ '						<p>Please enter the 6 digit code sent to <span class="fw-semibold">'+ email +'</span></p>'
+				+ '					</div>'
+				+ '					<div class="mt-4">'
+				+ '						<form>'
+				+ '							<div class="row">'
+				+ '								<div class="col-12">'
+				+ '									<div class="mb-3">'
+				+ '										<label for="digit1-input" class="visually-hidden">OTP CODE</label>'
+				+ '										<input type="text" class="form-control form-control-lg bg-light border-light text-center" id="OTP_CODE" maxLength="6">'
+				+ '									</div>'
+				+ '								</div>'
+				+ '							</div>'
+				+ '							<div class="mt-3">'
+				+ '								<button type="button" class="btn btn-success w-100" id="VERIFY_OTP_BTN">Confirm</button>'
+				+ '							</div>'
+				+ '						</form>'
+				+ '					</div>'
+				+ '					<div class="mt-5 text-center">'
+				+ '						<p class="mb-0">Did not receive a code ? <a href="javascript:void(0)" id="RESEND_BTN" class="fw-semibold text-primary text-decoration-underline">Resend</a> </p>'
+				+ '					</div>'
+				+ ' 			</div>'
+				+ '			</div>'
+				+ '		</div>'
+				+ '	</div>';
+				
+			$("#OTP_POPUP").append(sample);
+			$('button#VERIFY_OTP_BTN').css('cursor', 'pointer').click(verifyOtp);
+			$('a#RESEND_BTN').css('cursor', 'pointer').click(()=>{
+				var url = BASE_URL + '/api/auth/mail-send-otp?email=' + email;
+				var response = sys.mariaDB.ajax(url, null, 'GET', true);
+				ShowToast.success("Resend OTP successful");
+				/* var data = sys.mariaDB.ajax(BASE_URL + '/api/auth/mail-send-otp?email=' + email);
+				if (data.status == "OK"){
+					ShowToast.success("Resend otp successful");
+				} else {
+					ShowToast.error("Resend failed");
+				} */
+			});
+		}
+		
+	</script>
+
+</body>
+</html>

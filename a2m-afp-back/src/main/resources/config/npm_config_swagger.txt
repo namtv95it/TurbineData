@@ -1,0 +1,2 @@
+"swagger-ui-react": "^4.11.0",
+"@types/swagger-ui-react": "^4.11.0",

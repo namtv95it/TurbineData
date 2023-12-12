@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DashboardDAO">
+
+	<resultMap id="projectResultMap" type="map">
+		<result property="id" column="id" />
+		<result property="enable" column="enable" />
+		<result property="name" column="name" />
+		<result property="categoryId" column="categoryId" />
+		<result property="description" column="description" />
+		<result property="organization" column="organization" />
+		<result property="updatedDate" column="updatedDate" />
+		<result property="version" column="version" />
+		<result property="downloadUrl" column="downloadUrl" />
+		<result property="nameKr" column="nameKr" />
+		<collection property="tags" javaType="map">
+			<result property="tagId" column="tagId" />
+			<result property="tagName" column="tagName" />
+			<result property="tagNumberColor" column="tagNumberColor" />
+		</collection>
+	</resultMap>
+
+	<resultMap id="categoryResultMap" type="map">
+		<id property="id" column="id" />
+		<result property="enabled" column="enabled" />
+		<result property="name" column="name" />
+
+		<collection property="projects" ofType="map"
+			javaType="ArrayList">
+			<id property="projectId" column="projectId" />
+			<result property="projectEnable" column="projectEnable" />
+			<result property="projectName" column="projectName" />
+			<result property="categoryId" column="categoryId" />
+			<result property="description" column="description" />
+			<result property="organization" column="organization" />
+			<result property="updatedDate" column="updatedDate" />
+			<result property="version" column="version" />
+			<result property="downloadUrl" column="downloadUrl" />
+			<result property="nameKr" column="nameKr" />
+			<collection property="tags" ofType="map"
+				javaType="ArrayList">
+				<id property="tagId" column="tagId" />
+				<result property="tagName" column="tagName" />
+				<result property="tagNumberColor" column="tagNumberColor" />
+			</collection>
+		</collection>
+
+	</resultMap>
+
+	<select id="getCategories" resultMap="categoryResultMap">
+		SELECT C.ID as id,
+		C.name as name,
+		C.ENABLED as enabled,
+		T1.ID as projectId,
+		T1.ENABLED as projectEnable,
+		T1.NAME as projectName,
+		T1.CATEGORY_ID as categoryId,
+		T1.DESCRIPTION as description,
+		T1.ORGANIZATION as organization,
+		T1.UPDATED_DATE as updatedDate,
+		T1.VERSION as version,
+		T1.DOWNLOAD_URL as downloadUrl,
+		T1.NAME_KR as nameKr,
+		T3.ID as tagId,
+		T3.NAME as tagName,
+		T3.NUMBER_COLOR as tagNumberColor
+		FROM FRAME_CATEGORY C
+		LEFT JOIN FRAME_PROJECT T1 ON T1.CATEGORY_ID = C.ID
+		LEFT JOIN FRAME_PROJECT_TAGS T2 ON T1.ID = T2.PROJECT_ID
+		LEFT JOIN FRAME_TAGS T3 ON T3.ID = T2.TAGS_ID
+	</select>
+
+	<select id="getFrameCategory"
+		resultType="egovframework.com.a2m.egov.model.FrameCategory">
+		SELECT * FROM FRAME_CATEGORY
+	</select>
+	<select id="getFrameProject" parameterType="string"
+		resultType="egovframework.com.a2m.egov.model.FrameProject">
+		SELECT
+		FP.ID AS PROJECT_ID,
+		FP.NAME AS PROJECT_NAME,
+		FP.NAME_KR AS PROJECT_NAME_KR,
+		FP.DESCRIPTION,
+		FP.ORGANIZATION,
+		FP.UPDATED_DATE,
+		FP.VERSION,
+		FC.NAME AS CATEGORY_NAME,
+		FP.ENABLED,
+		FPM.MANUALS
+		FROM
+		FRAME_PROJECT FP
+		INNER JOIN FRAME_CATEGORY FC ON
+		FP.CATEGORY_ID = FC.ID
+		INNER JOIN FRAME_PROJECT_MANUALS FPM ON FP.ID =
+		FPM.PROJECT_ID
+		WHERE FP.CATEGORY_ID = #{categoryId}
+	</select>
+
+	<select id="getTagInProject" parameterType="string"
+		resultType="egovframework.com.a2m.egov.model.FrameTag">
+		SELECT
+		FT.ID AS tagId,
+		FT.NAME,
+		FT.NUMBER_COLOR
+		FROM
+		FRAME_PROJECT_TAGS FPT
+		INNER JOIN FRAME_TAGS FT ON FT.ID = FPT.TAGS_ID
+		WHERE FPT.PROJECT_ID = #{projectId}
+	</select>
+
+	<select id="getPostForDashboard" parameterType="String"
+		resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT 
+			* FROM
+		((
+		SELECT
+			p.ID as id,
+			p.TITLE as title,
+			p.AFP_MENU_ID as menuId,
+			m.TSST_MENU_ID as tsstMenuId,
+			p.DESCRIPTION as description,
+			p.COMM_CD_POST_TYPE_ID as postType,
+			p.CREATED_DATE as createdDate
+		FROM
+			AFP_POST p
+			LEFT JOIN AFP_MENU m on
+			p.AFP_MENU_ID = m.ID
+		<where>
+			p.COMM_CD_POST_TYPE_ID != "09-04" AND p.COMM_CD_POST_TYPE_ID != "09-05" AND
+			CASE
+				WHEN p.COMM_CD_POST_TYPE_ID = "09-02" THEN p.IS_DELETED = '0' and m.IS_DELETED = '0'
+				ELSE p.IS_DELETED = '0'
+			END
+		</where>
+		)
+		UNION ALL
+		(
+		SELECT
+			c.ID as id,
+			c.CONTENT as title,
+			p.AFP_MENU_ID as menuId,
+			m.TSST_MENU_ID as tsstMenuId,
+			'' as description,
+			'09-03' as postType,
+			c.CREATED_DATE as createdDate
+		FROM
+			AFP_COMMENT c
+			JOIN AFP_POST p on c.POST_ID = p.ID
+			JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		WHERE c.IS_DELETED = '0' AND  p.AFP_MENU_ID != '' AND m.IS_DELETED = '0' AND p.IS_DELETED = '0'
+		)) a
+		ORDER BY a.createdDate DESC
+		LIMIT 8
+	</select>
+
+	<select id="getProForDashboard" parameterType="String"
+			resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT
+			p.ID as id,
+			p.TITLE as title,
+			p.AFP_MENU_ID as menuId,
+			p.DESCRIPTION as description,
+			p.COMM_CD_POST_TYPE_ID as postType,
+			p.CREATED_DATE as createdDate
+		FROM
+			AFP_POST p
+		WHERE p.IS_DELETED = '0' AND p.COMM_CD_POST_TYPE_ID = '09-01'
+		ORDER BY p.CREATED_DATE DESC
+		LIMIT 8
+	</select>
+
+	<select id="getDocForDashboard" parameterType="String"
+			resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT
+			p.ID as id,
+			p.TITLE as title,
+			p.AFP_MENU_ID as menuId,
+			m.TSST_MENU_ID as tsstMenuId,
+			p.DESCRIPTION as description,
+			p.COMM_CD_POST_TYPE_ID as postType,
+			p.CREATED_DATE as createdDate
+		FROM
+			AFP_POST p
+			JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		WHERE p.IS_DELETED = '0' and m.IS_DELETED = '0' AND p.COMM_CD_POST_TYPE_ID = '09-02'
+		ORDER BY p.CREATED_DATE DESC
+		LIMIT 8
+	</select>
+
+	<select id="getThrForDashboard" parameterType="String"
+			resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT
+			c.ID as id,
+			c.CONTENT as title,
+			p.AFP_MENU_ID as menuId,
+			m.TSST_MENU_ID as tsstMenuId,
+			'' as description,
+			'09-03' as postType,
+			c.CREATED_DATE as createdDate
+		FROM
+			AFP_COMMENT c
+				JOIN AFP_POST p on c.POST_ID = p.ID
+				JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+		WHERE c.IS_DELETED = '0' AND  p.AFP_MENU_ID != '' AND m.IS_DELETED = '0' AND p.IS_DELETED = '0'
+		ORDER BY c.CREATED_DATE DESC
+			LIMIT 8
+	</select>
+
+	<select id="getAnnForDashboard" parameterType="String"
+			resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT
+			p.ID as id,
+			p.TITLE as title,
+			p.DESCRIPTION as description,
+			p.COMM_CD_POST_TYPE_ID as postType,
+			p.CREATED_DATE as createdDate
+		FROM
+			AFP_POST p
+		WHERE p.COMM_CD_POST_TYPE_ID = '09-04' and p.IS_DELETED = '0'
+		ORDER BY p.CREATED_DATE DESC
+		LIMIT 6
+	</select>
+
+	<select id="getListThresdLike" parameterType="String"
+			resultType="egovframework.com.a2m.egov.model.afp.DashboardDto">
+		SELECT
+			c.ID as id,
+			c.CONTENT as title,
+			p.AFP_MENU_ID as menuId,
+			m.TSST_MENU_ID as tsstMenuId,
+			'' as description,
+			'09-03' as postType,
+			c.CREATED_DATE as createdDate,
+			COUNT(DISTINCT l.ID) as numberLike
+		FROM
+			AFP_COMMENT c
+			JOIN AFP_POST p on c.POST_ID = p.ID
+			JOIN AFP_MENU m on p.AFP_MENU_ID = m.ID
+			JOIN AFP_LIKE l ON c.ID = l.COMMENT_ID
+		WHERE
+			1 = 1
+		    AND c.IS_DELETED = '0' AND p.AFP_MENU_ID != '' AND m.IS_DELETED = '0' AND p.IS_DELETED = '0'
+		GROUP BY c.ID
+		ORDER BY numberLike DESC
+		LIMIT 6
+	</select>
+
+</mapper>

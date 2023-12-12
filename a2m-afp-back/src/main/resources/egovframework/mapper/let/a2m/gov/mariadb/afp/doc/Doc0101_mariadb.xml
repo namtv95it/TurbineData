@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Doc0101DAO">
+
+	<select id="getAfpMenus" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuResponse" parameterType="map">
+		<!-- SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy
+		FROM AFP_MENU
+		WHERE 1 = 1
+						<if test="afpMenuName != null and afpMenuName != ''">
+							AND T1.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR T1.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%')
+						</if>
+			
+						<if test="tsstMenuId != null and tsstMenuId != ''">
+							AND TSST_MENU_ID = #{tsstMenuId}
+						</if>
+			
+						AND IS_DELETED = #{isDeleted} -->
+		SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy,
+			IS_DELETED as deleted
+		FROM AFP_MENU
+		WHERE ID IN (
+			WITH RECURSIVE TEMP AS (
+				SELECT A1.*
+				FROM AFP_MENU A1
+				WHERE ID IN (
+					SELECT A2.ID
+					FROM AFP_MENU A2 
+					WHERE 1 = 1
+						<if test="afpMenuName != null and afpMenuName != ''">
+							AND (A2.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR A2.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%'))
+						</if>
+						AND A2.IS_DELETED = #{isDeleted}
+				)
+				UNION
+				SELECT B1.*
+				FROM AFP_MENU B1
+					INNER JOIN TEMP ON B1.MENU_PARENT_ID = TEMP.ID
+				
+			)
+			SELECT DISTINCT ID FROM TEMP
+		) AND IS_DELETED = #{isDeleted} AND TSST_MENU_ID = #{tsstMenuId}
+		
+		UNION
+		
+		SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy,
+			IS_DELETED as deleted
+		FROM AFP_MENU
+		WHERE ID IN (
+			WITH RECURSIVE TEMP2 AS (
+					SELECT T1.*
+					FROM AFP_MENU T1
+					WHERE ID IN (
+						SELECT T2.ID
+						FROM AFP_MENU T2 
+						WHERE 1 = 1
+							<if test="afpMenuName != null and afpMenuName != ''">
+								AND (T2.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR T2.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%'))
+							</if>			
+							AND T2.IS_DELETED = #{isDeleted}
+				)
+				UNION
+				SELECT T3.*
+				FROM AFP_MENU T3
+					INNER JOIN TEMP2 ON T3.ID = TEMP2.MENU_PARENT_ID 
+			)
+			SELECT DISTINCT ID FROM TEMP2 
+		) AND IS_DELETED = #{isDeleted} AND TSST_MENU_ID = #{tsstMenuId}
+		
+		ORDER BY orderNo ASC
+		
+	</select>
+	
+	<select id="searchDoc" resultType="map" parameterType="map">
+		SELECT AFP_MENU_TEMP.ID as id,
+			AFP_MENU_TEMP.NAME as name,
+			AFP_MENU_TEMP.NAME_KR as nameKr,
+			AFP_MENU_TEMP.ORDER_NO as orderNo,
+			AFP_MENU_TEMP.URL as url,
+			AFP_MENU_TEMP.LEV as lev,
+			AFP_MENU_TEMP.TSST_MENU_ID as tsstMenuId,
+			AFP_MENU_TEMP.MENU_PARENT_ID as menuParentId,
+			AFP_MENU_TEMP.CREATED_DATE as createdDate,
+			AFP_MENU_TEMP.CREATED_BY as createdBy,
+			AFP_MENU_TEMP.UPDATED_DATE as updatedDate,
+			AFP_MENU_TEMP.UPDATED_BY as updatedBy,
+			AFP_MENU_TEMP.IS_DELETED as deleted,
+			TSST_MENU.URL as tsstMenuUrl
+		FROM (
+		
+			SELECT *
+			FROM AFP_MENU
+			WHERE ID IN (
+				WITH RECURSIVE TEMP AS (
+					SELECT A1.*
+					FROM AFP_MENU A1
+					WHERE ID IN (
+						SELECT A2.ID
+						FROM AFP_MENU A2 
+						WHERE 1 = 1
+							<if test="afpMenuName != null and afpMenuName != ''">
+								AND (A2.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR A2.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%'))
+							</if>
+							AND A2.IS_DELETED = #{isDeleted}
+					)
+					UNION
+					SELECT B1.*
+					FROM AFP_MENU B1
+						INNER JOIN TEMP ON B1.MENU_PARENT_ID = TEMP.ID
+				
+				)
+				SELECT DISTINCT ID FROM TEMP
+			) AND IS_DELETED = #{isDeleted} 
+		
+<!--			UNION-->
+<!--		-->
+<!--			SELECT *-->
+<!--			FROM AFP_MENU-->
+<!--			WHERE ID IN (-->
+<!--				WITH RECURSIVE TEMP2 AS (-->
+<!--					SELECT T1.*-->
+<!--					FROM AFP_MENU T1-->
+<!--					WHERE ID IN (-->
+<!--						SELECT T2.ID-->
+<!--						FROM AFP_MENU T2 -->
+<!--						WHERE 1 = 1-->
+<!--							<if test="afpMenuName != null and afpMenuName != ''">-->
+<!--								AND (T2.NAME LIKE CONCAT('%', #{afpMenuName}, '%') OR T2.NAME_KR LIKE CONCAT('%', #{afpMenuName}, '%'))-->
+<!--							</if>			-->
+<!--							AND T2.IS_DELETED = #{isDeleted}-->
+<!--						)-->
+<!--					UNION-->
+<!--					SELECT T3.*-->
+<!--					FROM AFP_MENU T3-->
+<!--						INNER JOIN TEMP2 ON T3.ID = TEMP2.MENU_PARENT_ID -->
+<!--				)-->
+<!--				SELECT DISTINCT ID FROM TEMP2 -->
+<!--			) AND IS_DELETED = #{isDeleted}-->
+			
+		) AFP_MENU_TEMP 
+		
+		INNER JOIN AFP_POST D2 ON AFP_MENU_TEMP.ID = D2.AFP_MENU_ID
+		INNER JOIN TSST_MENU ON TSST_MENU.MENU_ID = AFP_MENU_TEMP.TSST_MENU_ID
+		
+	</select>
+	
+
+	<insert id="insertWireFrameMenu" parameterType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuRequest">
+		INSERT INTO AFP_MENU
+		(
+			LEV,
+			NAME,
+			NAME_KR,
+			ORDER_NO,
+			URL,
+			TSST_MENU_ID,
+			MENU_PARENT_ID,
+			CREATED_DATE,
+			CREATED_BY
+		)
+		VALUES
+		(
+			#{lev},
+			#{name},
+			#{nameKr},
+			#{orderNo},
+			#{url},
+			#{tsstMenuId},
+			#{menuParentId},
+			#{createdDate},
+			#{createdBy}
+		);
+	</insert>
+
+	<update id="updateWireFrameMenu" parameterType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuRequest">
+		UPDATE AFP_MENU
+		SET
+			LEV = #{lev},
+			NAME = #{name},
+			NAME_KR = #{nameKr},
+			ORDER_NO = #{orderNo},
+			URL = #{url},
+			TSST_MENU_ID = #{tsstMenuId},
+			MENU_PARENT_ID = #{menuParentId},
+			UPDATED_BY = #{updatedBy},
+			UPDATED_DATE = NOW()
+		WHERE ID = #{id};
+	</update>
+
+	<delete id="deleteAfpMenu" parameterType="map">
+		UPDATE AFP_MENU
+		SET
+			IS_DELETED = #{isDeleted}
+		WHERE ID IN (
+			WITH RECURSIVE TEMP AS (
+				SELECT A1.*
+				FROM AFP_MENU A1
+				WHERE ID = #{menuId}
+				UNION
+				SELECT B1.*
+				FROM AFP_MENU B1
+				INNER JOIN TEMP ON B1.MENU_PARENT_ID = TEMP.ID
+			)
+			SELECT ID FROM TEMP
+		);
+	</delete>
+
+	<select id="getAfpMenuById" parameterType="Long" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuResponse">
+		SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy
+		FROM AFP_MENU 
+		WHERE ID = #{id}
+	</select>
+	
+	<select id="getWireFrameMenuByParentMenuId" parameterType="String" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuResponse">
+		SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy
+		FROM AFP_MENU 
+		WHERE MENU_PARENT_ID = #{menuParentId}
+	</select>
+
+	<select id="getMaxMenuId" parameterType="String" resultType="String">
+		SELECT MAX(tm.ID) FROM AFP_MENU tm
+		<if test="wireFrameMenuId != null and wireFrameMenuId != ''">
+			WHERE tm.MENU_PARENT_ID = #{wireFrameMenuId}
+		</if>
+	</select>
+	
+	<select id="getMaxOrdNo" resultType="Integer" parameterType="Long">
+		SELECT MAX(ORDER_NO) 
+		FROM AFP_MENU 
+		WHERE 1 = 1
+			<if test="afpMenuParentId != null">
+				AND MENU_PARENT_ID = #{afpMenuParentId}
+			</if>
+			<if test="afpMenuParentId == null">
+				AND	MENU_PARENT_ID IS NULL
+			</if>
+	</select>
+	
+	
+	<select id="getAllParentMenu" resultType="egovframework.com.a2m.egov.model.afp.doc.AfpMenuResponse" parameterType="Long">
+		SELECT ID as id,
+			NAME as name,
+			NAME_KR as nameKr,
+			ORDER_NO as orderNo,
+			URL as url,
+			LEV as lev,
+			TSST_MENU_ID as tsstMenuId,
+			MENU_PARENT_ID as menuParentId,
+			CREATED_DATE as createdDate,
+			CREATED_BY as createdBy,
+			UPDATED_DATE as updatedDate,
+			UPDATED_BY as updatedBy,
+			IS_DELETED as deleted
+		FROM AFP_MENU
+		WHERE ID IN (
+			WITH RECURSIVE TEMP AS (
+				SELECT T1.*
+				FROM AFP_MENU T1
+				WHERE T1.ID = #{menuId}				
+				UNION				
+				SELECT T2.*
+				FROM AFP_MENU T2
+					INNER JOIN TEMP ON T2.ID = TEMP.MENU_PARENT_ID 
+			)
+			SELECT ID FROM TEMP 
+		) 
+		
+	</select>
+	
+	
+</mapper>

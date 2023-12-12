@@ -1,0 +1,145 @@
+@charset "UTF-8";
+
+/* font, button, more-btn, context menu, input, select, tab*/
+ 
+/*************************************
+    # font
+************************************/
+.heading1 {font-size: 30px; font-weight: 700;}
+
+/*************************************
+    # button
+************************************/
+[class^="btn"] {padding: 0 7px; border-radius: 6px; font-size: 13px; color: #fff; transition: all 0.2s;}
+[class^="btn"] i {font-size: 20px; vertical-align: middle;}
+.btn1 {width: 35px; height: 35px; background: var(--color-secon);}
+.btn2 {height: 35px; background: var(--color-primary);}
+.btn2:hover {background: var(--color-primary-hover);}
+.btn3 {height: 35px; background: transparent; color: #808080;}
+.btn3:hover {text-decoration: underline;}
+
+/* utility 외 버튼 */
+.utility {display: flex; align-items: center; gap: 10px;}
+.utility .uri::before {content: ""; background: var(--icon-codefork); width: 23px; height: 23px; display: inline-block; vertical-align: middle;}
+.utility .bookmark {position: relative; display: inline-block; width: 35px; height: 35px; border-radius: 50%; background: #fff;}
+.utility .bookmark::before {content: "\ea1c"; font-family: var(--xeicon); color: var(--color-gray); position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-size: 20px;}
+.utility .bookmark.active::before {content: "\ea1c"; color: #FF767C;}
+
+.close-btn {width: 35px; height: 35px; border-radius: 50%;}
+.close-btn:hover {background: rgb(255 255 255 / 50%);}
+.close-btn::before {content: "\e921"; font-family: var(--xeicon); vertical-align: middle; font-size: 23px; color: #808080;}
+
+/*************************************
+    # more
+************************************/
+button[class^="more"] {font-size: 20px; color: #808080; width: 35px; height: 35px; border-radius: 50%; transition: all 0.2s;}
+button[class^="more"]::before {content: "\e949"; font-family: var(--xeicon);}
+button[class^="more"]:hover {background: rgb(255 255 255 / 50%);}
+
+/*************************************
+    # context-menu
+************************************/
+.context-menu {visibility: hidden; position: absolute; right: 0; top: 31px; z-index: 1; width: 150px; padding: 4px; border-radius: 5px; background: #fff; box-shadow: 0px 12px 20px 4px rgba(0, 0, 0, 0.02);}
+.context-menu button {display: block; width: 100%; padding: 4px 10px; border-radius: 3px; text-align: left; font-size: 14px; color: #808080; font-weight: 500;}
+.context-menu button::before {content: ""; font-family: var(--lineawesome); font-size: 1rem; font-weight: bold; margin-right: 10px;}
+.context-menu button.edit::before {content: "\f044";}
+.context-menu button.delete::before {content: "\f2ed";}
+.context-menu button.upload::before {content: "\f03e";}
+.context-menu button:not(.delete):hover {background: #f2f2f2;}
+.context-menu .delete:hover {background: #fcf3f4; color: #FE415E;}
+.context-menu.active {visibility: visible;}
+.context-menu button.approve::before {content: "\f0fe";}
+.context-menu button.reject::before {content: "\f2ea";}
+.context-menu button:hover {background: #f2f2f2;}
+.context-menu .delete:hover {background: #fcf3f4; color: #FE415E;}
+.context-menu .approve:hover {background: #f3f6fc; color: #243bb8;}
+.context-menu .reject:hover {background: #f3fcf7; color: #3a9754;}
+.context-menu.active {visibility: visible;}
+
+/*************************************
+    # input-group
+************************************/
+.input-group {position: relative;}
+.input-group + .input-group {margin-top: 20px;}
+.input-group .tit {margin-bottom: 3px; font-weight: 500;}
+.input-group input,
+.select-trigger {display: block; padding: 11px 15px; width: 100%; height: 44px; font-size: 14px; font-weight: 600; border-radius: 7px; border: 1px solid #162848; background: transparent; color: var(--color-navy);}
+
+/* focus */
+:not(.subject).input-group input:focus {border-color: #214FE8;}
+
+/* error */
+.input-group.error .tit {color: #FF5555;}
+.input-group.error input,
+.input-group.error input:focus,
+.input-group.error .select-trigger {border-color: #FF5555;}
+.input-group .error-msg {font-size: 13px; font-weight: 500; color: #FF5555;}
+
+/* placeholder */
+.input-group input::placeholder,
+.input-group textarea::placeholder,
+.input-group .select-group .placeholder {opacity: 0.5; font-size: 14px; font-weight: 400; color: #637ac4;}
+
+/* select-group */
+.select-group {position: relative;}
+.select-trigger {position: relative; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}  
+.select-group .arrow::before {content: "\e941"; font-family: var(--xeicon); font-size: 14px; font-weight: bold; display: inline-block;}
+.select-option-list {position: absolute; top: 50px; left: 0; right: 0; z-index: 2; max-height: 0; border-radius: 7px; background: #fff; transition: max-height 0.2s ease-out; overflow: hidden;}
+.select-option-list.active {max-height: 200px; overflow-y: auto;}
+.select-option {display: block; padding: 10px 15px; font-size: 14px; cursor: pointer;}
+.select-option:hover {background: var(--color-primary); color: #fff;}
+
+.select-group .placeholder.remove {display: none;}
+  
+/* select-group 스크롤바 */
+.select-option-list::-webkit-scrollbar {width: 5px;}
+/* select-group 스크롤바 막대*/
+.select-option-list::-webkit-scrollbar-thumb {border-radius: 4rem; border: 0.4rem solid var(--color-primary);} 
+/* select-group 스크롤바 뒷 배경 */
+.select-option-list::-webkit-scrollbar-track {border-radius: 4rem; background: rgba(128, 154, 241, 0.1);}  
+
+/*************************************
+    # tab
+************************************/
+
+/* tab-type1 (main)*/
+.tab-type1 .tab-menu {position: relative; display: inline-flex; align-items: center; background: #f1f5f9; border-radius: 10px; border: 1px solid #d6d8de44; margin-bottom: 7px;}
+.tab-type1 .tab-menu .tab-btn {display: block; padding: 5px 45px; font-size: 14px; color: var(--color-gray);}
+.tab-type1 .tab-menu .tab-btn.active {color: #000; font-weight: 600; transition-delay: 0.1s;}
+  
+.tab-type1 .tab-content {display: none;}
+.tab-type1 .tab-content.active {display: block;}
+.tab-type1 .tab-indicator {position: absolute; bottom: 0; left: 0; min-width: 110px; width: 0; height: 100%; border: 2px solid var(--color-primary); background: rgb(128 155 241 / 20%); border-radius: 10px; cursor: pointer; transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;}
+
+/* tab-type2 */
+.tab-type2 .tab-menu {position: relative; display: flex; align-items: center; border-bottom: 3px solid rgba(255,255,255,0.5);}
+.tab-type2 .tab-menu::before {content: ""; border-bottom: 3px solid rgba(255,255,255,0.5); width: 50px; position: absolute; z-index: -1; bottom: -3px; left: -50px;}
+.tab-type2 .tab-menu::after {content: ""; border-bottom: 3px solid rgba(255,255,255,0.5); width: 50px; position: absolute; z-index: -1; bottom: -3px; right: -50px;}
+.tab-type2 .tab-menu .tab-btn {display: block; margin: 0 20px; padding: 5px 0 10px; font-size: 15px; font-weight: 600; color: rgba(0, 0, 0, 0.227); transition: color 0.1s;}
+.tab-type2 .tab-menu .tab-btn:first-of-type {margin: 0 20px 0 0;}
+.tab-type2 .tab-menu .tab-btn.active {color: var(--color-dark); font-weight: 700; transition-delay: 0.1s;}
+  
+.tab-type2 .tab-content {display: none; padding: 20px 0;}
+.tab-type2 .tab-content.active {display: block;}
+.tab-type2 .tab-indicator {position: absolute; bottom: -3px; left: 0; width: 0; height: 100%; border-bottom: 3px solid var(--color-primary); cursor: pointer; transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;}
+.tab-type2 .tab-indicator {min-width: 20px; transform: translateX(0px);}
+
+.tab-type2 .tab-content.active .tab-board-lst {animation: fade-in-bottom 0.5s; padding-bottom: 30px;}
+
+@keyframes fade-in-bottom {
+    0% {opacity: 0; transform: translateY(15px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
+
+
+.comment-area .info-wrap .bookmark::before {content: "\ea1c"; font-family: var(--xeicon); color: var(--color-gray); transform: translate(-50%, -50%); font-size: 20px;}
+.comment-area .info-wrap .bookmark.active::before {content: "\ea1c"; color: #FF767C;}
+.comment-area .info-wrap .like{
+    margin-right: 20px;
+}
+.comment-area .info-wrap {
+    /* position: absolute;
+    right: 7px;
+    top: 36px; */
+    margin-left: auto;
+}

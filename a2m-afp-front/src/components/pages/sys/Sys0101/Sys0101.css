@@ -1,0 +1,3 @@
+div[class*='TreeRowContainer'] > div[role='gridcell'] span[class*='ChevronContainer']{
+    top: 17px;
+}

@@ -1,0 +1,1 @@
+/src/app/pages/sam/sam0104,/src/app/constants/swaggerConstant.ts,/src/app/services/sam/Sam0104Service.ts
